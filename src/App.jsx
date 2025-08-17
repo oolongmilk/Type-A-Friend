@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './Home.jsx';
-import FindTime from './FindTime.jsx';
-import PollResults from './PollResults.jsx';
+import FindTime from './Tools/FindTime/FindTime.jsx';
+import PollResults from './Tools/FindTime/PollResults.jsx';
 import './App.css';
 
 // function Tools() {
