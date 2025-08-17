@@ -26,6 +26,10 @@ function CreatePoll() {
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
+  
+  // Modal state for sharing
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareCode, setShareCode] = useState('');
 
   // Predefined time slots (24 hours in AM/PM format)
   const timeSlots = [
@@ -104,7 +108,8 @@ function CreatePoll() {
     };
 
     savePoll(newShareCode, newPoll);
-    navigate(`/find-time/${newShareCode}`);
+    setShareCode(newShareCode);
+    setShowShareModal(true);
   };
 
   const toggleDateSelection = (date) => {
@@ -321,6 +326,51 @@ function CreatePoll() {
             </div>
           </div>
         </div>
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <div className="modal-overlay" onClick={() => setShowShareModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>🎉 Poll Created Successfully!</h3>
+              <p>Share this link with your friends so they can add their availability:</p>
+              
+              <div className="share-link-container">
+                <div className="share-link">
+                  <code>{`${window.location.origin}/find-time/${shareCode}`}</code>
+                </div>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/find-time/${shareCode}`);
+                    alert('Link copied to clipboard!');
+                  }}
+                  className="button primary copy-button"
+                >
+                  Copy Link
+                </button>
+              </div>
+              
+              <div className="share-code-info">
+                <p><strong>Share Code:</strong> {shareCode}</p>
+                <p className="share-instructions">Send this link to your friends and they can add their availability to your event!</p>
+              </div>
+              
+              <div className="modal-actions">
+                <button 
+                  onClick={() => navigate(`/find-time/${shareCode}`)}
+                  className="button primary"
+                >
+                  View Poll
+                </button>
+                <button 
+                  onClick={() => setShowShareModal(false)}
+                  className="button"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
