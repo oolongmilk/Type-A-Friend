@@ -293,7 +293,7 @@ function CreatePoll() {
             <div className="form-actions">
               <button 
                 onClick={createPoll} 
-                className="button primary"
+                className="button submit-poll"
                 disabled={selectedDateTimeCombos.size === 0}
               >
                 Send Poll to Your Friends
