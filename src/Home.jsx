@@ -5,22 +5,32 @@ function Home() {
   return (
     <main className="main-content">
       <div className="jumbotron">
-        <h2>Are you the Type A friend of your group?</h2>
-        <p className="jumbotron-subtext">If you’re the one who always makes the group chat calendar, this is for you.</p>
+        <img src="/iasip-meme.jpeg" alt="It's Always Sunny meme" className="jumbotron-image" />
+        <p className="jumbotron-subtext">Type A's thank you for your service 🫵 </p>
+      </div>
+      <div className="faq-section">
+        <h2>FAQ</h2>
       </div>
       <div className="question-cards">
         <Link to="/find-time" className="question-card">
           <span role="img" aria-label="calendar">🗓️</span>
           <div>
-            <h3>When is a good time for everyone?</h3>
-            <p>Because ‘I’m free whenever’ isn’t helpful, Brad.</p>
+            <h3>So when we going?</h3>
+            <p>"I'm free whenever" isn't helpful.</p>
           </div>
         </Link>
         <Link to="/event-reminder" className="question-card">
           <span role="img" aria-label="reminder">🔔</span>
           <div>
-            <h3>When is the event happening again?</h3>
-            <p>For the friend who asks… every. single. week.</p>
+            <h3>When is it happening again?</h3>
+            <p>We've been though this.</p>
+          </div>
+        </Link>
+        <Link to="/whos-going" className="question-card">
+          <span role="img" aria-label="people">👥</span>
+          <div>
+            <h3>Who's going again?</h3>
+            <p>If I hear "maybe" one more time I'm gonna lose it.</p>
           </div>
         </Link>
       </div>
