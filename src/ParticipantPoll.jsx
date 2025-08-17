@@ -270,8 +270,14 @@ function ParticipantPoll() {
                         } ${dayInfo && dayInfo.isToday ? 'today' : ''} ${dayInfo && dayInfo.isPast ? 'past' : ''}`}
                         onClick={() => dayInfo && dayInfo.isCurrentMonth && !dayInfo.isPast && toggleDateSelection(dayInfo.date)}
                         disabled={!dayInfo || dayInfo.isPast}
+                        style={{ position: 'relative' }}
                       >
                         {dayInfo && dayInfo.day}
+                        {dayInfo && hasExistingSelections(dayInfo.date) && (
+                          <span className="calendar-existing-indicator" title="Available">
+                            ✓
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
