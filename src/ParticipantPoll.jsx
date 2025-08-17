@@ -250,30 +250,31 @@ function ParticipantPoll() {
               <div className="form-section">
                 <label>Step 1: Select dates that work for you:</label>
                 <div className="calendar-container">
-                <div className="calendar-header">
-                  <h3>{calendarData.monthName}</h3>
-                </div>
-                <div className="calendar-weekdays">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="weekday-header">{day}</div>
-                  ))}
-                </div>
-                <div className="calendar-grid">
-                  {calendarData.days.map((dayInfo, index) => (
-                    <button
-                      key={index}
-                      className={`calendar-day ${
-                        !dayInfo ? 'empty' : 
-                        !dayInfo.isCurrentMonth ? 'other-month' : 
-                        currentSelectedDate === dayInfo.date ? 'selected' :
-                        hasExistingSelections(dayInfo.date) ? 'has-existing' : ''
-                      } ${dayInfo && dayInfo.isToday ? 'today' : ''} ${dayInfo && dayInfo.isPast ? 'past' : ''}`}
-                      onClick={() => dayInfo && dayInfo.isCurrentMonth && !dayInfo.isPast && toggleDateSelection(dayInfo.date)}
-                      disabled={!dayInfo || dayInfo.isPast}
-                    >
-                      {dayInfo && dayInfo.day}
-                    </button>
-                  ))}
+                  <div className="calendar-header">
+                    <h3>{calendarData.monthName}</h3>
+                  </div>
+                  <div className="calendar-weekdays">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="weekday-header">{day}</div>
+                    ))}
+                  </div>
+                  <div className="calendar-grid">
+                    {calendarData.days.map((dayInfo, index) => (
+                      <button
+                        key={index}
+                        className={`calendar-day ${
+                          !dayInfo ? 'empty' : 
+                          !dayInfo.isCurrentMonth ? 'other-month' : 
+                          currentSelectedDate === dayInfo.date ? 'selected' :
+                          hasExistingSelections(dayInfo.date) ? 'has-existing' : ''
+                        } ${dayInfo && dayInfo.isToday ? 'today' : ''} ${dayInfo && dayInfo.isPast ? 'past' : ''}`}
+                        onClick={() => dayInfo && dayInfo.isCurrentMonth && !dayInfo.isPast && toggleDateSelection(dayInfo.date)}
+                        disabled={!dayInfo || dayInfo.isPast}
+                      >
+                        {dayInfo && dayInfo.day}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -297,7 +298,6 @@ function ParticipantPoll() {
                       </span>
                     </div>
                   </div>
-                  
                   <div className="time-grid">
                     {times.map(time => {
                       const isExisting = getExistingTimesForDate(currentSelectedDate).includes(time);
@@ -315,7 +315,6 @@ function ParticipantPoll() {
                       );
                     })}
                   </div>
-                  
                   <div className="add-section">
                     <button 
                       onClick={addSelectedTimesToCombos}
@@ -328,7 +327,6 @@ function ParticipantPoll() {
                 </div>
               </div>
             </div>
-
             <div className="right-column">
               <div className="form-section">
                 <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
@@ -353,7 +351,6 @@ function ParticipantPoll() {
                   )}
                 </div>
               </div>
-
               <div className="form-actions">
                 <button 
                   onClick={submitResponse} 
@@ -367,8 +364,7 @@ function ParticipantPoll() {
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
     );
   }
 
