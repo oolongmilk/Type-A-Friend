@@ -1,29 +1,14 @@
-import React from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import './FindTime.css';
 
-function formatDateTime(combo) {
-  // Placeholder: you may want to import this from a utility file if needed
-  if (!combo) return '';
-  const [date, time] = combo.split('T');
-  const dateObj = new Date(date);
-  const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-  const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
-  const day = dateObj.getDate();
-  return `${dayName}, ${month} ${day} at ${time}`;
-}
+import { formatDateTime, getAllAvailableCombos } from './utils';
 
 const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = React.useState(null);
-  const [participantName, setParticipantName] = React.useState('');
 
   React.useEffect(() => {
     if (shareCode) {
       const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
       setPollData(polls[shareCode] || null);
-      // Optionally, try to get participant name from localStorage or query param
-      setParticipantName(localStorage.getItem('participantName') || '');
     }
   }, [shareCode]);
 
@@ -39,13 +24,14 @@ const PollResults = () => {
     );
   }
 
-  const availability = {};
-  pollData.dateTimeCombos.forEach(combo => {
-    availability[combo] = pollData.responses.filter(response => 
-      response.times.includes(combo)
-    ).length;
+
+  // Aggregate all combos and count how many participants selected each
+  const allCombos = Array.from(getAllAvailableCombos(pollData.participants));
+  const comboCounts = {};
+  allCombos.forEach(combo => {
+    comboCounts[combo] = pollData.participants.filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo)).length;
   });
-  const sortedTimes = Object.entries(availability).sort((a, b) => b[1] - a[1]);
+  const sortedTimes = Object.entries(comboCounts).sort((a, b) => b[1] - a[1]);
 
   return (
     <main className="main-content">
@@ -53,7 +39,7 @@ const PollResults = () => {
         <h2>📊 Results for "{pollData.eventName}"</h2>
         <p>Response submitted! Here's how everyone's availability looks:</p>
         <div className="results-section">
-          <h3>Time Availability ({pollData.responses.length} responses)</h3>
+          <h3>Time Availability ({pollData.participants.length} responses)</h3>
           <div className="results-grid">
             {sortedTimes.map(([combo, count]) => (
               <div key={combo} className="result-item">
@@ -61,9 +47,9 @@ const PollResults = () => {
                 <div className="result-bar">
                   <div 
                     className="result-fill" 
-                    style={{ width: `${(count / pollData.responses.length) * 100}%` }}
+                    style={{ width: `${(count / pollData.participants.length) * 100}%` }}
                   ></div>
-                  <span className="result-count">{count}/{pollData.responses.length}</span>
+                  <span className="result-count">{count}/{pollData.participants.length}</span>
                 </div>
               </div>
             ))}
@@ -72,10 +58,10 @@ const PollResults = () => {
         <div className="participants-section">
           <h3>Participants</h3>
           <div className="participants-list">
-            {pollData.responses.map((response, index) => (
+            {pollData.participants.map((p, index) => (
               <div key={index} className="participant-item">
-                <strong>{response.name}</strong>
-                <span className="participant-count">({response.times.length} times selected)</span>
+                <strong>{p.name}</strong>
+                <span className="participant-count">({p.dateTimeCombos.length} times selected)</span>
               </div>
             ))}
           </div>

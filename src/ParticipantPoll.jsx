@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import './FindTime.css';
+import { formatDateTime, getAllAvailableCombos } from './utils';
 
 // Utility functions for poll management
 const loadPoll = (shareCode) => {
@@ -30,11 +31,7 @@ const addResponse = (shareCode, participantName, selectedDateTimeCombos) => {
   return true;
 };
 
-const savePoll = (shareCode, pollData) => {
-  const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
-  polls[shareCode] = pollData;
-  localStorage.setItem('timePolls', JSON.stringify(polls));
-};
+
 
 
 function ParticipantPoll() {
@@ -42,7 +39,7 @@ function ParticipantPoll() {
   const navigate = useNavigate();
   const [pollData, setPollData] = useState(null);
   const [participantName, setParticipantName] = useState('');
-  const [mode, setMode] = useState('loading');
+  const [mode, setMode] = useState('loading'); // Only used for 'not-found' and 'participate'
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
@@ -85,16 +82,7 @@ function ParticipantPoll() {
       const poll = loadPoll(shareCode);
       if (poll) {
         setPollData(poll);
-        // Compute all available combos from all participants
-        const combos = new Set();
-        if (poll.participants && Array.isArray(poll.participants)) {
-          poll.participants.forEach(p => {
-            if (Array.isArray(p.dateTimeCombos)) {
-              p.dateTimeCombos.forEach(combo => combos.add(combo));
-            }
-          });
-        }
-        setAllAvailableCombos(combos);
+        setAllAvailableCombos(getAllAvailableCombos(poll.participants));
         setMode('participate');
       } else {
         setMode('not-found');
@@ -157,27 +145,7 @@ function ParticipantPoll() {
     setSelectedDateTimeCombos(newCombos);
   };
 
-  const formatDateTime = (dateTimeString) => {
-    const [date, time] = dateTimeString.split('T');
-    const dateObj = new Date(date);
-    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-    const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
-    const day = dateObj.getDate();
-    return `${dayName}, ${month} ${day} at ${time}`;
-  };
 
-  const getTimeAvailability = () => {
-    if (!pollData || pollData.responses.length === 0) return {};
-    
-    const availability = {};
-    pollData.dateTimeCombos.forEach(combo => {
-      availability[combo] = pollData.responses.filter(response => 
-        response.times.includes(combo)
-      ).length;
-    });
-    
-    return availability;
-  };
 
 
   // Use allAvailableCombos for availability display
@@ -275,7 +243,7 @@ function ParticipantPoll() {
                       </button>
                     ))}
                   </div>
-                  <div className="calendar-legend">
+                  <div className="legend">
                     <span className="calendar-existing-indicator" style={{marginRight: 6, position: 'static', display: 'inline-flex', verticalAlign: 'middle'}}>✓</span>
                     <span>Days that work for others</span>
                   </div>
@@ -328,7 +296,7 @@ function ParticipantPoll() {
                       Add Date & Times ({currentSelectedTimes.size})
                     </button>
                   </div>
-                  <div className="time-legend">
+                  <div className="legend">
                     <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
                     <span style={{color: '#388e3c'}}>Times that work for other people</span>
                   </div>
