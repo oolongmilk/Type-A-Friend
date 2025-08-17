@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './Home.jsx';
+import FindTime from './FindTime.jsx';
 import './App.css';
 
 // function Tools() {
@@ -45,18 +46,6 @@ function ForTypeBs() {
   );
 }
 
-function FindTime() {
-  return (
-    <main className="main-content">
-      <div className="tool-placeholder">
-        <h2>🗓️ Find a Good Time</h2>
-        <p>Tool coming soon! Here you'll help your group find a time that works for everyone.</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    </main>
-  );
-}
-
 function EventReminder() {
   return (
     <main className="main-content">
@@ -87,7 +76,7 @@ function App() {
       <nav className="navbar">
         <div className="navbar-content">
           <div className="navbar-logo">
-            <Link to="/">📋 Type A Friend</Link>
+            <span>📋 Type A Friend</span>
           </div>
           <ul className="nav-list">
             <li className="nav-item"><Link to="/">Home</Link></li>
@@ -100,6 +89,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/find-time" element={<FindTime />} />
+        <Route path="/find-time/:shareCode" element={<FindTime />} />
         <Route path="/event-reminder" element={<EventReminder />} />
         <Route path="/whos-going" element={<WhosGoing />} />
         {/* <Route path="/tools" element={<Tools />} /> */}
