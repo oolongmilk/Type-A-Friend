@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import './FindTime.css';
 
 // Utility functions for poll management
@@ -9,44 +9,24 @@ const loadPoll = (shareCode) => {
 };
 
 const addResponse = (shareCode, participantName, selectedDateTimeCombos) => {
-  const pollData = loadPoll(shareCode);
+  const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
+  const pollData = polls[shareCode];
   if (!pollData) return false;
-  
-  // Update the poll with new date/time combinations
-  const allCombos = new Set([...pollData.dateTimeCombos, ...selectedDateTimeCombos]);
-  pollData.dateTimeCombos = Array.from(allCombos);
-  
-  // Extract unique dates and times from all combinations
-  const dates = new Set();
-  const timeSlots = new Set();
-  
-  pollData.dateTimeCombos.forEach(combo => {
-    const [date, time] = combo.split('T');
-    dates.add(date);
-    timeSlots.add(time);
-  });
-  
-  pollData.dates = Array.from(dates);
-  pollData.timeSlots = Array.from(timeSlots);
-  
-  // Add or update participant response
-  const existingIndex = pollData.responses.findIndex(r => r.name === participantName);
-  
+
+  // Add or update participant in the participants array
+  if (!pollData.participants) pollData.participants = [];
+  const existingIndex = pollData.participants.findIndex(p => p.name === participantName);
   if (existingIndex >= 0) {
-    pollData.responses[existingIndex] = {
-      name: participantName,
-      times: selectedDateTimeCombos,
-      submittedAt: new Date().toISOString()
-    };
+    pollData.participants[existingIndex].dateTimeCombos = selectedDateTimeCombos;
   } else {
-    pollData.responses.push({
+    pollData.participants.push({
       name: participantName,
-      times: selectedDateTimeCombos,
-      submittedAt: new Date().toISOString()
+      dateTimeCombos: selectedDateTimeCombos
     });
   }
-  
-  savePoll(shareCode, pollData);
+
+  polls[shareCode] = pollData;
+  localStorage.setItem('timePolls', JSON.stringify(polls));
   return true;
 };
 
@@ -56,40 +36,35 @@ const savePoll = (shareCode, pollData) => {
   localStorage.setItem('timePolls', JSON.stringify(polls));
 };
 
+
 function ParticipantPoll() {
   const { shareCode } = useParams();
+  const navigate = useNavigate();
   const [pollData, setPollData] = useState(null);
   const [participantName, setParticipantName] = useState('');
-  const [mode, setMode] = useState('loading'); // 'loading', 'participate', 'results', 'not-found'
-  
-  // Calendar and time selection state (similar to CreatePoll)
+  const [mode, setMode] = useState('loading');
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
+  const [allAvailableCombos, setAllAvailableCombos] = useState(new Set());
 
   const getCurrentMonthDays = () => {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
-    
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
     const days = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
     for (let i = 0; i < 42; i++) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
-      
       const dateString = currentDate.toISOString().split('T')[0];
       const isCurrentMonth = currentDate.getMonth() === month;
       const isToday = currentDate.getTime() === today.getTime();
       const isPast = currentDate < today;
-      
       days.push({
         date: dateString,
         day: currentDate.getDate(),
@@ -98,18 +73,28 @@ function ParticipantPoll() {
         isPast
       });
     }
-    
     return {
       days,
       monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     };
   };
 
+  // Load poll and compute all available combos from all participants
   useEffect(() => {
     if (shareCode) {
       const poll = loadPoll(shareCode);
       if (poll) {
         setPollData(poll);
+        // Compute all available combos from all participants
+        const combos = new Set();
+        if (poll.participants && Array.isArray(poll.participants)) {
+          poll.participants.forEach(p => {
+            if (Array.isArray(p.dateTimeCombos)) {
+              p.dateTimeCombos.forEach(combo => combos.add(combo));
+            }
+          });
+        }
+        setAllAvailableCombos(combos);
         setMode('participate');
       } else {
         setMode('not-found');
@@ -130,8 +115,8 @@ function ParticipantPoll() {
     
     const success = addResponse(shareCode, participantName.trim(), Array.from(selectedDateTimeCombos));
     if (success) {
-      setMode('results');
       setPollData(loadPoll(shareCode));
+      navigate(`/find-time/${shareCode}/results`);
     }
   };
 
@@ -194,16 +179,25 @@ function ParticipantPoll() {
     return availability;
   };
 
+
+  // Use allAvailableCombos for availability display
   const hasExistingSelections = (date) => {
-    if (!pollData) return false;
-    return pollData.dateTimeCombos.some(combo => combo.startsWith(date));
+    if (!allAvailableCombos || allAvailableCombos.size === 0) return false;
+    for (let combo of allAvailableCombos) {
+      if (combo.startsWith(date)) return true;
+    }
+    return false;
   };
 
   const getExistingTimesForDate = (date) => {
-    if (!pollData) return [];
-    return pollData.dateTimeCombos
-      .filter(combo => combo.startsWith(date))
-      .map(combo => combo.split('T')[1]);
+    if (!allAvailableCombos || allAvailableCombos.size === 0) return [];
+    const times = [];
+    for (let combo of allAvailableCombos) {
+      if (combo.startsWith(date)) {
+        times.push(combo.split('T')[1]);
+      }
+    }
+    return times;
   };
 
   const times = [
@@ -382,79 +376,7 @@ function ParticipantPoll() {
     );
   }
 
-  if (mode === 'results') {
-    const availability = getTimeAvailability();
-    const sortedTimes = Object.entries(availability).sort((a, b) => b[1] - a[1]);
-    
-    return (
-      <main className="main-content">
-        <div className="poll-container">
-          <h2>📊 Results for "{pollData.eventName}"</h2>
-          <p>Response submitted! Here's how everyone's availability looks:</p>
-          
-          <div className="results-section">
-            <h3>Time Availability ({pollData.responses.length} responses)</h3>
-            <div className="results-grid">
-              {sortedTimes.map(([combo, count]) => (
-                <div key={combo} className="result-item">
-                  <span className="result-time">{formatDateTime(combo)}</span>
-                  <div className="result-bar">
-                    <div 
-                      className="result-fill" 
-                      style={{ width: `${(count / pollData.responses.length) * 100}%` }}
-                    ></div>
-                    <span className="result-count">{count}/{pollData.responses.length}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="participants-section">
-            <h3>Participants</h3>
-            <div className="participants-list">
-              {pollData.responses.map((response, index) => (
-                <div key={index} className="participant-item">
-                  <strong>{response.name}</strong>
-                  <span className="participant-count">({response.times.length} times selected)</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-actions">
-            <button 
-              onClick={() => {
-                setMode('participate');
-                const existingResponse = pollData.responses.find(r => r.name === participantName);
-                if (existingResponse) {
-                  setSelectedDateTimeCombos(new Set(existingResponse.times));
-                }
-              }}
-              className="button"
-            >
-              Edit My Response
-            </button>
-            <Link to="/find-time" className="button primary">Create New Poll</Link>
-            <Link to="/">← Back to Home</Link>
-          </div>
-
-          <div className="share-section">
-            <h3>Share This Poll</h3>
-            <div className="share-link">
-              <code>{window.location.href}</code>
-              <button 
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
-                className="button small"
-              >
-                Copy Link
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="main-content">

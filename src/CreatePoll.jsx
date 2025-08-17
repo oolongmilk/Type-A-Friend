@@ -81,33 +81,29 @@ function CreatePoll() {
   const calendarData = getCurrentMonthDays();
 
   const createPoll = () => {
-    if (!eventName.trim() || selectedDateTimeCombos.size === 0) {
-      alert('Please add at least one date and time combination');
+    if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
+      alert('Please enter an event name, your name, and at least one date/time combination');
       return;
     }
-
-    // Extract unique dates and times from combinations
-    const dates = new Set();
-    const timeSlots = new Set();
-    
-    selectedDateTimeCombos.forEach(combo => {
-      const [date, time] = combo.split('T');
-      dates.add(date);
-      timeSlots.add(time);
-    });
 
     const newShareCode = generateShareCode();
     const newPoll = {
       id: newShareCode,
       eventName: eventName.trim(),
-      dates: Array.from(dates),
-      timeSlots: Array.from(timeSlots),
-      dateTimeCombos: Array.from(selectedDateTimeCombos),
-      responses: [],
-      createdAt: new Date().toISOString()
+      owner: creatorName.trim(),
+      participants: [
+        {
+          name: creatorName.trim(),
+          dateTimeCombos: Array.from(selectedDateTimeCombos)
+        }
+      ]
     };
 
-    savePoll(newShareCode, newPoll);
+    // Save to localStorage in the correct format
+    const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
+    polls[newShareCode] = newPoll;
+    localStorage.setItem('timePolls', JSON.stringify(polls));
+
     setShareCode(newShareCode);
     setShowShareModal(true);
   };
@@ -356,7 +352,7 @@ function CreatePoll() {
               
               <div className="modal-actions">
                 <button 
-                  onClick={() => navigate(`/find-time/${shareCode}`)}
+                  onClick={() => navigate(`/find-time/${shareCode}/results`)}
                   className="button primary"
                 >
                   View Poll

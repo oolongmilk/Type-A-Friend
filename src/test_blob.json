@@ -1,0 +1,40 @@
+{
+  "ABC123": {
+    "id": "SHARECODE123",
+    "eventName": "My Awesome Event",
+    "participants": [
+      {
+        "name": "Alice",
+        "dateTimeCombos": [
+          "2025-08-19T7:00 PM",
+          "2025-08-20T8:00 PM"
+        ]
+      },
+      {
+        "name": "Bob",
+        "dateTimeCombos": [
+          "2025-08-19T7:00 PM"
+        ]
+      }
+    ]
+  },
+  "DEF123": {
+    "id": "DEF123",
+    "eventName": "My Awesome Event",
+    "participants": [
+      {
+        "name": "Alice",
+        "dateTimeCombos": [
+          "2025-08-19T7:00 PM",
+          "2025-08-20T8:00 PM"
+        ]
+      },
+      {
+        "name": "Bob",
+        "dateTimeCombos": [
+          "2025-08-19T7:00 PM"
+        ]
+      }
+    ]
+  }
+}
