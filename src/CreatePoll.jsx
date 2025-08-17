@@ -17,6 +17,7 @@ function CreatePoll() {
   const navigate = useNavigate();
   
   // Form data for creating new poll
+  const [creatorName, setCreatorName] = useState('');
   const [eventName, setEventName] = useState('');
   const [selectedDates, setSelectedDates] = useState(new Set());
   const [selectedTimeSlots, setSelectedTimeSlots] = useState(new Set());
@@ -140,7 +141,7 @@ function CreatePoll() {
   // Helper functions for date-time combo management
   const addDateTimeCombo = () => {
     if (!currentSelectedDate || currentSelectedTimes.size === 0) {
-      alert('Please select a date and at least one time');
+      alert('Pick a date AND at least one time. Both are required! 📅⏰');
       return;
     }
     
@@ -186,18 +187,30 @@ function CreatePoll() {
           {/* Left Column - Event Setup and Selection */}
           <div className="left-column">
             <div className="form-section">
-              <label>Event Name:</label>
+              <label>What's your name?</label>
               <input
                 type="text"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                placeholder="e.g., Team Meeting, Dinner Plans"
+                value={creatorName}
+                onChange={(e) => setCreatorName(e.target.value)}
+                placeholder="Type A Friend"
                 className="text-input"
               />
             </div>
 
             <div className="form-section">
-              <label>Step 1: Select a Date:</label>
+              
+              <label>What are we actually doing?</label>
+              <input
+                type="text"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                placeholder="e.g., Birthday, Dinner Plans"
+                className="text-input"
+              />
+            </div>
+
+            <div className="form-section">
+              <label>Step 1: Select dates that work for you:</label>
               <div className="calendar-container">
                 <div className="calendar-header">
                   <h3>{calendarData.monthName}</h3>
@@ -302,7 +315,7 @@ function CreatePoll() {
                 className="button primary"
                 disabled={selectedDateTimeCombos.size === 0}
               >
-                Create Poll & Get Share Link
+                Send Poll to Your Friends
               </button>
               <Link to="/" className="button">Cancel</Link>
             </div>
