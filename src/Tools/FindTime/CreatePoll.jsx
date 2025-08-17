@@ -7,11 +7,6 @@ const generateShareCode = () => {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 };
 
-const savePoll = (shareCode, pollData) => {
-  const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
-  polls[shareCode] = pollData;
-  localStorage.setItem('timePolls', JSON.stringify(polls));
-};
 
 function CreatePoll() {
   const navigate = useNavigate();
@@ -19,8 +14,6 @@ function CreatePoll() {
   // Form data for creating new poll
   const [creatorName, setCreatorName] = useState('');
   const [eventName, setEventName] = useState('');
-  const [selectedDates, setSelectedDates] = useState(new Set());
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState(new Set());
   
   // New state for visual date-time picker
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
@@ -147,23 +140,13 @@ function CreatePoll() {
     }
     
     const newCombos = new Set(selectedDateTimeCombos);
-    const newDates = new Set(selectedDates);
-    const newTimeSlots = new Set(selectedTimeSlots);
     
     // Add each selected time for the current date
     currentSelectedTimes.forEach(time => {
       const combo = `${currentSelectedDate}T${time}`;
       newCombos.add(combo);
-      newTimeSlots.add(time);
     });
-    
-    // Add the date
-    newDates.add(currentSelectedDate);
-    
     setSelectedDateTimeCombos(newCombos);
-    setSelectedDates(newDates);
-    setSelectedTimeSlots(newTimeSlots);
-    
     // Clear current selections
     setCurrentSelectedDate('');
     setCurrentSelectedTimes(new Set());
@@ -175,9 +158,6 @@ function CreatePoll() {
     setSelectedDateTimeCombos(newCombos);
   };
 
-  const formatDateTimeCombo = (combo) => {
-    return formatDateTime(combo);
-  };
 
   return (
     <main className="main-content">
@@ -295,7 +275,7 @@ function CreatePoll() {
                   <div className="combo-list">
                     {Array.from(selectedDateTimeCombos).sort().map(combo => (
                       <div key={combo} className="combo-item">
-                        <span className="combo-text">{formatDateTimeCombo(combo)}</span>
+                        <span className="combo-text">{formatDateTime(combo)}</span>
                         <button 
                           onClick={() => removeDateTimeCombo(combo)}
                           className="remove-button"
