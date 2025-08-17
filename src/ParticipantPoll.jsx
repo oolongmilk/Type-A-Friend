@@ -281,6 +281,10 @@ function ParticipantPoll() {
                       </button>
                     ))}
                   </div>
+                  <div className="calendar-legend">
+                    <span className="calendar-existing-indicator" style={{marginRight: 6, position: 'static', display: 'inline-flex', verticalAlign: 'middle'}}>✓</span>
+                    <span>Days that work for others</span>
+                  </div>
                 </div>
               </div>
 
@@ -329,6 +333,10 @@ function ParticipantPoll() {
                     >
                       Add Date & Times ({currentSelectedTimes.size})
                     </button>
+                  </div>
+                  <div className="time-legend">
+                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
+                    <span style={{color: '#388e3c'}}>Times that work for other people</span>
                   </div>
                 </div>
               </div>
