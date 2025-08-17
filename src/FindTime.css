@@ -246,6 +246,20 @@
   background: #bbdefb;
 }
 
+.calendar-existing-indicator {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.3rem;
+  font-size: 0.7rem;
+  color: #4caf50;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.calendar-day {
+  position: relative;
+}
+
 .time-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -279,6 +293,26 @@
   background: #1976d2;
   border-color: #1976d2;
   color: white;
+}
+
+.time-button.existing {
+  background: #e8f5e8;
+  border-color: #4caf50;
+  color: #2e7d32;
+  position: relative;
+}
+
+.time-button.existing:hover {
+  background: #c8e6c8;
+}
+
+.time-button .existing-indicator {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.3rem;
+  font-size: 0.7rem;
+  color: #4caf50;
+  font-weight: bold;
 }
 
 /* Date-Time Picker Styles */

@@ -74,36 +74,28 @@ function ParticipantPoll() {
     
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
     
     const days = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
-    }
-    
-    // Add days of the current month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split('T')[0];
+    for (let i = 0; i < 42; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      
+      const dateString = currentDate.toISOString().split('T')[0];
+      const isCurrentMonth = currentDate.getMonth() === month;
+      const isToday = currentDate.getTime() === today.getTime();
+      const isPast = currentDate < today;
+      
       days.push({
-        date: dateStr,
-        day: day,
-        isCurrentMonth: true
-      });
-    }
-    
-    // Fill the rest to make it 42 days (6 weeks)
-    const remainingCells = 42 - days.length;
-    for (let i = 1; i <= remainingCells; i++) {
-      const nextMonthDay = new Date(year, month + 1, i);
-      const dateStr = nextMonthDay.toISOString().split('T')[0];
-      days.push({
-        date: dateStr,
-        day: i,
-        isCurrentMonth: false
+        date: dateString,
+        day: currentDate.getDate(),
+        isCurrentMonth,
+        isToday,
+        isPast
       });
     }
     
@@ -214,7 +206,12 @@ function ParticipantPoll() {
       .map(combo => combo.split('T')[1]);
   };
 
-  const times = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+  const times = [
+    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
+    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
+    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
+  ];
   const calendarData = getCurrentMonthDays();
 
   if (mode === 'not-found') {
@@ -237,59 +234,77 @@ function ParticipantPoll() {
           <h2>🗓️ {pollData.eventName}</h2>
           <p>Add your availability to this event. Days highlighted in blue already have times selected by others.</p>
           
-          <div className="form-section">
-            <label>What's your name?</label>
-            <input
-              type="text"
-              value={participantName}
-              onChange={(e) => setParticipantName(e.target.value)}
-              placeholder="Enter your name"
-              className="text-input"
-            />
-          </div>
-
           <div className="two-column-layout">
-            <div className="calendar-section">
-              <h3>{calendarData.monthName}</h3>
-              <div className="calendar-grid">
+            <div className="left-column">
+              <div className="form-section">
+                <label>What's your name?</label>
+                <input
+                  type="text"
+                  value={participantName}
+                  onChange={(e) => setParticipantName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="text-input"
+                />
+              </div>
+
+              <div className="form-section">
+                <label>Step 1: Select dates that work for you:</label>
+                <div className="calendar-container">
                 <div className="calendar-header">
-                  <div className="day-header">Sun</div>
-                  <div className="day-header">Mon</div>
-                  <div className="day-header">Tue</div>
-                  <div className="day-header">Wed</div>
-                  <div className="day-header">Thu</div>
-                  <div className="day-header">Fri</div>
-                  <div className="day-header">Sat</div>
+                  <h3>{calendarData.monthName}</h3>
                 </div>
-                
-                <div className="calendar-body">
+                <div className="calendar-weekdays">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="weekday-header">{day}</div>
+                  ))}
+                </div>
+                <div className="calendar-grid">
                   {calendarData.days.map((dayInfo, index) => (
-                    <div
+                    <button
                       key={index}
                       className={`calendar-day ${
                         !dayInfo ? 'empty' : 
                         !dayInfo.isCurrentMonth ? 'other-month' : 
                         currentSelectedDate === dayInfo.date ? 'selected' :
                         hasExistingSelections(dayInfo.date) ? 'has-existing' : ''
-                      }`}
-                      onClick={() => dayInfo && dayInfo.isCurrentMonth && toggleDateSelection(dayInfo.date)}
+                      } ${dayInfo && dayInfo.isToday ? 'today' : ''} ${dayInfo && dayInfo.isPast ? 'past' : ''}`}
+                      onClick={() => dayInfo && dayInfo.isCurrentMonth && !dayInfo.isPast && toggleDateSelection(dayInfo.date)}
+                      disabled={!dayInfo || dayInfo.isPast}
                     >
                       {dayInfo && dayInfo.day}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
 
-              {currentSelectedDate && (
+              <div className="form-section">
+                <label>Step 2: Select Times (multiple allowed):</label>
                 <div className="time-selection">
-                  <h4>Select times for {new Date(currentSelectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</h4>
+                  <div className="current-selections">
+                    <div className="selection-display">
+                      <span className="selection-label">Selected Date:</span>
+                      <span className="selection-value">
+                        {currentSelectedDate ? formatDateTime(currentSelectedDate + 'T00:00').split(' at')[0] : 'None'}
+                      </span>
+                    </div>
+                    <div className="selection-display">
+                      <span className="selection-label">Selected Times ({currentSelectedTimes.size}):</span>
+                      <span className="selection-value">
+                        {currentSelectedTimes.size > 0 ? 
+                          Array.from(currentSelectedTimes).sort().join(', ') : 
+                          'None'
+                        }
+                      </span>
+                    </div>
+                  </div>
+                  
                   <div className="time-grid">
                     {times.map(time => {
                       const isExisting = getExistingTimesForDate(currentSelectedDate).includes(time);
                       return (
                         <button
                           key={time}
-                          className={`time-slot ${
+                          className={`time-button ${
                             currentSelectedTimes.has(time) ? 'selected' : ''
                           } ${isExisting ? 'existing' : ''}`}
                           onClick={() => toggleTimeForDate(time)}
@@ -300,51 +315,60 @@ function ParticipantPoll() {
                       );
                     })}
                   </div>
-                  <button 
-                    onClick={addSelectedTimesToCombos}
-                    disabled={currentSelectedTimes.size === 0}
-                    className="button primary"
-                  >
-                    Add {currentSelectedTimes.size} time{currentSelectedTimes.size !== 1 ? 's' : ''} for this day
-                  </button>
+                  
+                  <div className="add-section">
+                    <button 
+                      onClick={addSelectedTimesToCombos}
+                      disabled={!currentSelectedDate || currentSelectedTimes.size === 0}
+                      className="button primary add-button"
+                    >
+                      Add Date & Times ({currentSelectedTimes.size})
+                    </button>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
 
-            <div className="selected-times-section">
-              <h3>Your Selected Times ({selectedDateTimeCombos.size})</h3>
-              {selectedDateTimeCombos.size === 0 ? (
-                <p className="no-times">Select dates and times from the calendar</p>
-              ) : (
-                <div className="selected-times-list">
-                  {Array.from(selectedDateTimeCombos).sort().map(combo => (
-                    <div key={combo} className="selected-time-item">
-                      <span>{formatDateTime(combo)}</span>
-                      <button 
-                        onClick={() => removeFromVisualPicker(combo)}
-                        className="remove-time"
-                      >
-                        ×
-                      </button>
+            <div className="right-column">
+              <div className="form-section">
+                <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
+                <div className="selected-combos">
+                  {selectedDateTimeCombos.size === 0 ? (
+                    <p className="no-selections">No times selected yet. Use the controls on the left to add date/time combinations.</p>
+                  ) : (
+                    <div className="combo-list">
+                      {Array.from(selectedDateTimeCombos).sort().map(combo => (
+                        <div key={combo} className="combo-item">
+                          <span className="combo-text">{formatDateTime(combo)}</span>
+                          <button 
+                            onClick={() => removeFromVisualPicker(combo)}
+                            className="remove-button"
+                            title="Remove this time"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          <div className="form-actions">
-            <button 
-              onClick={submitResponse} 
-              disabled={!participantName.trim() || selectedDateTimeCombos.size === 0}
-              className="button primary"
-            >
-              Submit My Availability
-            </button>
-            <Link to="/" className="button">Cancel</Link>
+              <div className="form-actions">
+                <button 
+                  onClick={submitResponse} 
+                  disabled={!participantName.trim() || selectedDateTimeCombos.size === 0}
+                  className="button primary"
+                >
+                  Submit My Availability
+                </button>
+                <Link to="/" className="button">Cancel</Link>
+              </div>
+            </div>
           </div>
         </div>
-      </main>
+      </div>
+    </main>
     );
   }
 
