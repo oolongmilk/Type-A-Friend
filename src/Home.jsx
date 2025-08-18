@@ -9,7 +9,8 @@ function Home() {
         <p className="jumbotron-subtext">Type A's thank you for your service 🫵 </p>
       </div>
       <div className="faq-section">
-        <h2>FAQ</h2>
+        <h2>FAQ </h2>
+        <p>(Friendship altering questions)</p>
       </div>
       <div className="question-cards">
         <Link to="/find-time" className="question-card">

@@ -1,15 +1,17 @@
 
-import { formatDateTime, getAllAvailableCombos } from './utils';
-import React from 'react';
+import { formatDateTime } from './utils';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
+import './FindTime.css';
 
 const PollResults = () => {
   const { shareCode } = useParams();
-  const [pollData, setPollData] = React.useState(null);
+  const [pollData, setPollData] = useState(null);
+  const [hoveredDate, setHoveredDate] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (shareCode) {
       const pollRef = ref(database, 'polls/' + shareCode);
       const unsubscribe = onValue(
@@ -41,100 +43,207 @@ const PollResults = () => {
   }
 
 
-  // Aggregate all combos and count how many participants selected each
-  const allCombos = Array.from(getAllAvailableCombos(pollData.participants));
-  const comboCounts = {};
-  allCombos.forEach(combo => {
-    comboCounts[combo] = pollData.participants.filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo)).length;
-  });
-  const sortedTimes = Object.entries(comboCounts).sort((a, b) => b[1] - a[1]);
+  // Build date/time availability map
+  const timeSlots = [
+    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
+    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
+    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
+  ];
 
-  // Suggest the best date(s) with the most participants, listing their names
-  let suggestion = null;
-  if (sortedTimes.length > 0) {
-    const maxCount = sortedTimes[0][1];
-    if (maxCount > 1) {
-      const bestCombos = sortedTimes.filter(([combo, count]) => count === maxCount).map(([combo]) => combo);
-      suggestion = (
-        <div className="suggestion-section">
-          <h3>Suggested Time{bestCombos.length > 1 ? 's' : ''}</h3>
-          <ul>
-            {bestCombos.map(combo => {
-              // Find participant names for this combo
-              const names = pollData.participants
-                .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
-                .map(p => p.name);
-              return (
-                <li key={combo}>
-                  <strong>{formatDateTime(combo)}</strong>
-                  <br />
-                  <span style={{fontSize: '0.95em', color: '#555'}}>Available: {names.join(', ')}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      );
-    } else {
-      suggestion = <div className="suggestion-section"><h3>No overlaps</h3></div>;
-    }
-  } else {
-    suggestion = <div className="suggestion-section"><h3>No overlaps</h3></div>;
+  // Build a map: date -> { count, names, times: { time -> [names] } }
+  const dateMap = {};
+  if (pollData && pollData.participants) {
+    pollData.participants.forEach(p => {
+      (p.dateTimeCombos || []).forEach(combo => {
+        const [date, time] = combo.split('T');
+        if (!dateMap[date]) dateMap[date] = { count: 0, names: new Set(), times: {} };
+        dateMap[date].count++;
+        dateMap[date].names.add(p.name);
+        if (!dateMap[date].times[time]) dateMap[date].times[time] = new Set();
+        dateMap[date].times[time].add(p.name);
+      });
+    });
   }
+
+  // Find best date/time(s)
+  let bestCombos = [];
+  let maxCount = 0;
+  if (pollData && pollData.participants) {
+    const comboCounts = {};
+    pollData.participants.forEach(p => {
+      (p.dateTimeCombos || []).forEach(combo => {
+        comboCounts[combo] = (comboCounts[combo] || 0) + 1;
+      });
+    });
+    maxCount = Math.max(0, ...Object.values(comboCounts));
+    if (maxCount > 1) {
+      bestCombos = Object.entries(comboCounts)
+        .filter(([combo, count]) => count === maxCount)
+        .map(([combo]) => combo);
+    }
+  }
+
+  // Calendar grid logic (match CreatePoll)
+  const getCurrentMonthDays = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    const days = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 42; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      const dateString = currentDate.toISOString().split('T')[0];
+      const isCurrentMonth = currentDate.getMonth() === month;
+      const isToday = currentDate.getTime() === today.getTime();
+      const isPast = currentDate < today;
+      days.push({
+        date: dateString,
+        day: currentDate.getDate(),
+        isCurrentMonth,
+        isToday,
+        isPast
+      });
+    }
+    return {
+      days,
+      monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    };
+  };
+  const calendarData = getCurrentMonthDays();
 
   return (
     <main className="main-content">
       <div className="poll-container">
         <h2>📊 Results for "{pollData.eventName}"</h2>
-        <p>Response submitted! Here's how everyone's availability looks:</p>
-        <div className="results-section">
-          {suggestion}
-          <h3>Time Availability</h3>
-          <div className="results-grid">
-            {sortedTimes.map(([combo, count]) => {
-              const names = pollData.participants
-                .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
-                .map(p => p.name);
-              return (
-                <div key={combo} className="result-item">
-                  <span className="result-time">{formatDateTime(combo)}</span>
-                  <div className="result-bar">
-                    <div 
-                      className="result-fill" 
-                      style={{ width: `${(count / pollData.participants.length) * 100}%` }}
-                    ></div>
-                    <span className="result-count">{names.length > 0 ? names.join(', ') : 'No one'}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="participants-section">
-          <h3>Participants</h3>
-          <div className="participants-list">
-            {pollData.participants.map((p, index) => (
-              <div key={index} className="participant-item">
-                <strong>{p.name}</strong>
-                <span className="participant-count">({p.dateTimeCombos.length} times selected)</span>
+        <div className="two-column-layout">
+          {/* Left column: best time and calendar */}
+          <div className="left-column">
+            {/* Best day(s) banner */}
+            {bestCombos.length > 0 ? (
+              <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
+                <h3 style={{color: '#388e3c', display: 'flex', alignItems: 'center', gap: 8}}>
+                  <span style={{fontSize: '1.5em'}}>✅</span> Best Time{bestCombos.length > 1 ? 's' : ''}
+                </h3>
+                <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                  {bestCombos.map(combo => {
+                    const [date, time] = combo.split('T');
+                    const names = pollData.participants
+                      .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
+                      .map(p => p.name);
+                    return (
+                      <li key={combo} style={{marginBottom: 4}}>
+                        <strong>{formatDateTime(combo)}</strong>
+                        <span style={{marginLeft: 8, color: '#388e3c'}}>({names.join(', ')})</span>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-            ))}
+            ) : (
+              <div className="suggestion-section"><h3>No overlaps</h3></div>
+            )}
+            {/* Calendar grid */}
+            <div className="calendar-container">
+              <div className="calendar-header">
+                <h3>{calendarData.monthName}</h3>
+              </div>
+              <div className="calendar-weekdays">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="weekday-header">{day}</div>
+                ))}
+              </div>
+              <div className="calendar-grid">
+                {calendarData.days.map((dayData, index) => {
+                  const hasPeople = dateMap[dayData.date] && dateMap[dayData.date].names.size > 0;
+                  const isBest = bestCombos.some(combo => combo.startsWith(dayData.date));
+                  return (
+                    <button
+                      key={index}
+                      className={`calendar-day${dayData.isCurrentMonth ? '' : ' other-month'}${dayData.isToday ? ' today' : ''}${dayData.isPast ? ' past' : ''}${hasPeople ? ' has-existing' : ''}${isBest ? ' selected' : ''}`}
+                      disabled={dayData.isPast}
+                      onMouseEnter={() => setHoveredDate(dayData.date)}
+                      onMouseLeave={() => setHoveredDate(null)}
+                      style={isBest ? {border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9'} : {}}
+                    >
+                      {dayData.day}
+                      {hasPeople && (
+                        <span className="calendar-existing-indicator" title="Available">
+                          ✓
+                        </span>
+                      )}
+                      {/* Tooltip for names/times */}
+                      {hoveredDate === dayData.date && hasPeople && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '110%',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: 'white',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: 8,
+                          boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+                          padding: 8,
+                          zIndex: 10,
+                          minWidth: 160
+                        }}>
+                          <div style={{fontWeight: 600, marginBottom: 4}}>Available:</div>
+                          <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
+                            {[...dateMap[dayData.date].names].map(name => (
+                              <li key={name} style={{fontSize: '0.97em'}}>{name}</li>
+                            ))}
+                          </ul>
+                          {/* Show times for this date */}
+                          <div style={{marginTop: 6, fontSize: '0.95em'}}>
+                            <strong>Times:</strong>
+                            <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
+                              {Object.entries(dateMap[dayData.date].times).map(([time, names]) => (
+                                <li key={time}>{time} <span style={{color: '#388e3c'}}>({[...names].join(', ')})</span></li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="form-actions">
-          <Link to={`/find-time/${shareCode}`} className="button">Edit My Response</Link>
-          <Link to="/find-time" className="button primary">Create New Poll</Link>
-        </div>
-        <div className="share-section">
-          <h3>Share This Poll</h3>
-          <div className="share-link">
-            <code>{window.location.href}</code>
-            <button 
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
-              className="button small"
-            >
-              Copy Link
-            </button>
+          {/* Right column: participants and share */}
+          <div className="right-column">
+            <div className="participants-section">
+              <h3>Participants</h3>
+              <div className="participants-list">
+                {pollData.participants.map((p, index) => (
+                  <div key={index} className="participant-item">
+                    <strong>{p.name}</strong>
+                    <span className="participant-count">({p.dateTimeCombos.length} times selected)</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* ...existing code... */}
+            <div className="share-section">
+              <h3>Share This Poll</h3>
+              <div className="share-link">
+                <code>{window.location.href}</code>
+                <button 
+                  onClick={() => navigator.clipboard.writeText(window.location.href)}
+                  className="button small"
+                >
+                  Copy Link
+                </button>
+              </div>
+            </div>
+            <div className="form-actions" style={{marginTop: '2rem'}}>
+              <Link to="/find-time" className="button primary">Create New Poll</Link>
+            </div>
           </div>
         </div>
       </div>
