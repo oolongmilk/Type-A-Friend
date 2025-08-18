@@ -1,4 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
 import Home from './Home.jsx';
 import FindTime from './Tools/FindTime/FindTime.jsx';
 import PollResults from './Tools/FindTime/PollResults.jsx';
@@ -8,8 +9,9 @@ import ForTypeBs from './ForTypeBs.jsx';
 import './App.css';
 
 
-
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="app-container">
       <nav className="navbar">
@@ -17,11 +19,31 @@ function App() {
           <div className="navbar-logo">
             <span>Type A Friend</span>
           </div>
-          <ul className="nav-list">
-            <li className="nav-item"><Link to="/">Home</Link></li>
-            {/* <li className="nav-item"><Link to="/tools">Tools</Link></li> */}
-            <li className="nav-item"><Link to="/about">About</Link></li>
-            <li className="nav-item"><Link to="/for-type-bs">For Type B's</Link></li>
+          <button
+            className="hamburger"
+            aria-label="Toggle menu"
+            onClick={() => setMenuOpen(m => !m)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'none',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 40,
+              width: 40,
+              marginLeft: 16
+            }}
+          >
+            <span style={{ width: 24, height: 3, background: '#222', margin: '4px 0', borderRadius: 2, display: 'block' }}></span>
+            <span style={{ width: 24, height: 3, background: '#222', margin: '4px 0', borderRadius: 2, display: 'block' }}></span>
+            <span style={{ width: 24, height: 3, background: '#222', margin: '4px 0', borderRadius: 2, display: 'block' }}></span>
+          </button>
+          <ul className={`nav-list${menuOpen ? ' menu-open' : ''}`}>
+            <li className="nav-item"><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
+            <li className="nav-item"><Link to="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
+            <li className="nav-item"><Link to="/for-type-bs" onClick={() => setMenuOpen(false)}>For Type B's</Link></li>
           </ul>
         </div>
       </nav>
@@ -29,7 +51,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/find-time" element={<FindTime />} />
         <Route path="/find-time/:shareCode" element={<FindTime />} />
-        <Route path="/find-time/:shareCode/results" element={<PollResults />} />>
+  <Route path="/find-time/:shareCode/results" element={<PollResults />} />
         <Route path="/whos-going" element={<WhosGoing />} />
         {/* <Route path="/tools" element={<Tools />} /> */}
         <Route path="/about" element={<About />} />
