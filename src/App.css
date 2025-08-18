@@ -8,12 +8,11 @@
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-  padding-top: 80px; /* Account for fixed navbar */
 }
 
 .navbar {
-  background: #222;
-  color: #fff;
+  background: #E0F0FC;
+  color: #000;
   padding: 1rem 0;
   width: 100vw;
   margin: 0;
@@ -37,7 +36,7 @@
   font-weight: bold;
 }
 .navbar-logo a {
-  color: #fff;
+  color: #000;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -52,14 +51,14 @@
   padding: 0;
 }
 .nav-item a {
-  color: #fff;
+  color: #000;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
   position: relative;
 }
 .nav-item a:hover {
-  color: #61dafb;
+  color: #183153;
 }
 .nav-item a::after {
   content: '';
@@ -68,7 +67,7 @@
   height: 2px;
   bottom: -5px;
   left: 0;
-  background-color: #61dafb;
+  background-color: #183153;
   transition: width 0.3s;
 }
 .nav-item a:hover::after {

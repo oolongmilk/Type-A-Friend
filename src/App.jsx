@@ -77,7 +77,7 @@ function App() {
       <nav className="navbar">
         <div className="navbar-content">
           <div className="navbar-logo">
-            <span>📋 Type A Friend</span>
+            <span>Type A Friend</span>
           </div>
           <ul className="nav-list">
             <li className="nav-item"><Link to="/">Home</Link></li>
