@@ -9,7 +9,7 @@ import './FindTime.css';
 const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(null);
-  const [hoveredDate, setHoveredDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     if (shareCode) {
@@ -167,8 +167,7 @@ const PollResults = () => {
                       key={index}
                       className={`calendar-day${dayData.isCurrentMonth ? '' : ' other-month'}${dayData.isToday ? ' today' : ''}${dayData.isPast ? ' past' : ''}${hasPeople ? ' has-existing' : ''}${isBest ? ' selected' : ''}`}
                       disabled={dayData.isPast}
-                      onMouseEnter={() => setHoveredDate(dayData.date)}
-                      onMouseLeave={() => setHoveredDate(null)}
+                      onClick={() => hasPeople && setSelectedDate(dayData.date)}
                       style={isBest ? {border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9'} : {}}
                     >
                       {dayData.day}
@@ -176,38 +175,6 @@ const PollResults = () => {
                         <span className="calendar-existing-indicator" title="Available">
                           ✓
                         </span>
-                      )}
-                      {/* Tooltip for names/times */}
-                      {hoveredDate === dayData.date && hasPeople && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '110%',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          background: 'white',
-                          border: '1px solid #e0e0e0',
-                          borderRadius: 8,
-                          boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
-                          padding: 8,
-                          zIndex: 10,
-                          minWidth: 160
-                        }}>
-                          <div style={{fontWeight: 600, marginBottom: 4}}>Available:</div>
-                          <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
-                            {[...dateMap[dayData.date].names].map(name => (
-                              <li key={name} style={{fontSize: '0.97em'}}>{name}</li>
-                            ))}
-                          </ul>
-                          {/* Show times for this date */}
-                          <div style={{marginTop: 6, fontSize: '0.95em'}}>
-                            <strong>Times:</strong>
-                            <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
-                              {Object.entries(dateMap[dayData.date].times).map(([time, names]) => (
-                                <li key={time}>{time} <span style={{color: '#388e3c'}}>({[...names].join(', ')})</span></li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
                       )}
                     </button>
                   );
@@ -228,7 +195,27 @@ const PollResults = () => {
                 ))}
               </div>
             </div>
-            {/* ...existing code... */}
+            {/* New details section */}
+            <div className="calendar-details-box" style={{background: '#fff', border: '1px solid #e0e0e0', borderRadius: '1rem', margin: '1.5rem 0', padding: '1.2rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)'}}>
+              <h3 style={{marginTop: 0, fontSize: '1.1rem', color: '#1976d2'}}>Click on a date for more details</h3>
+              {selectedDate && dateMap[selectedDate] ? (
+                <div>
+                  <div style={{fontWeight: 600, marginBottom: 4}}>
+                    {selectedDate}
+                  </div>
+                  <div style={{marginTop: 6, fontSize: '0.95em'}}>
+                    <strong>Times & Participants:</strong>
+                    <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
+                      {Object.entries(dateMap[selectedDate].times).map(([time, names]) => (
+                        <li key={time}>{time} <span style={{color: '#388e3c'}}>({[...names].join(', ')})</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div style={{color: '#888', fontSize: '0.98em'}}>No date selected.</div>
+              )}
+            </div>
             <div className="share-section">
               <h3>Share This Poll</h3>
               <div className="share-link">

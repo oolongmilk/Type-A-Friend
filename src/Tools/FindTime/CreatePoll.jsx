@@ -176,12 +176,12 @@ function CreatePoll() {
 
             <div className="form-section">
               
-              <label>What are we actually doing?</label>
+              <label>What are we doing?</label>
               <input
                 type="text"
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
-                placeholder="e.g., Birthday, Dinner Plans"
+                placeholder="e.g., Birthday, Dinner Plan"
                 className="text-input"
               />
             </div>
