@@ -180,14 +180,14 @@ const PollResults = () => {
                   );
                 })}
               </div>
-            </div>
-            {/* Legend under calendar */}
-            <div className="calendar-legend" style={{marginTop: '1rem', fontSize: '0.98em', background: '#fff', borderRadius: '0.7rem', padding: '0.7rem 1.2rem', boxShadow: '0 1px 6px rgba(0,0,0,0.04)'}}>
-              <strong>Legend:</strong>
-              <ul style={{listStyle: 'none', padding: 0, margin: '0.5em 0 0 0', display: 'flex', gap: '1.5em', flexWrap: 'wrap'}}>
-                <li><span style={{color: '#388e3c', fontWeight: 700}}>✓</span> = Someone is available</li>
-                <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
-              </ul>
+              {/* Legend under calendar */}
+              <div className="legend" style={{marginTop: '1rem'}}>
+                <strong style={{color: '#222'}}>Legend:</strong>
+                <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1.5em', flexWrap: 'wrap', color: '#222'}}>
+                  <li><span style={{color: '#388e3c', fontWeight: 700}}>✓</span> = Someone is available</li>
+                  <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
+                </ul>
+              </div>
             </div>
           </div>
           {/* Right column: participants and share */}
@@ -228,13 +228,13 @@ const PollResults = () => {
               <h3>Share This Poll</h3>
               <div className="share-link">
                 <code>{window.location.href}</code>
-                <button 
+              </div>
+               <button 
                   onClick={() => navigator.clipboard.writeText(window.location.href)}
                   className="button small"
                 >
                   Copy Link
                 </button>
-              </div>
             </div>
             <div className="form-actions" style={{marginTop: '2rem'}}>
               <Link to="/find-time" className="button primary">Create New Poll</Link>
