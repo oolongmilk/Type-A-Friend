@@ -1,0 +1,19 @@
+<svg width="180" height="180" viewBox="48 40 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Duck head with leaf">
+  <g fill="none" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- head -->
+    <ellipse cx="128" cy="110" rx="70" ry="60" fill="#FFE99C"/>
+    <!-- highlight -->
+    <path d="M96 84c16-10 48-10 60-8" stroke="#fff" opacity=".65"/>
+    <!-- eyes -->
+    <circle cx="104" cy="110" r="7" fill="#111" stroke="none"/>
+    <circle cx="152" cy="110" r="7" fill="#111" stroke="none"/>
+    <!-- beak -->
+    <ellipse cx="128" cy="122" rx="16" ry="10" fill="#F6B23C" stroke="#111"/>
+    <!-- cheeks -->
+    <circle cx="92" cy="122" r="8" fill="#FFB3C1" stroke="none"/>
+    <circle cx="164" cy="122" r="8" fill="#FFB3C1" stroke="none"/>
+    <!-- leaf -->
+    <path d="M128 76v-10" />
+    <path d="M128 66c18-4 26 6 16 16-10 10-28 2-28-6" fill="#9BD48E"/>
+  </g>
+</svg>

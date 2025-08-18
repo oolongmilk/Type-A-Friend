@@ -97,12 +97,10 @@ function CreatePoll() {
 
     try {
       await set(ref(database, 'polls/' + newShareCode), newPoll);
-      console.log("Event written successfully!");
-      alert("Data saved!"); // Simple feedback
       setShareCode(newShareCode);
       setShowShareModal(true);
     } catch (error) {
-      alert('Error saving poll to database: ' + error.message);
+      alert("Oops there's been an error saving poll to database!");
     }
   };
 
@@ -304,7 +302,7 @@ function CreatePoll() {
         {showShareModal && (
           <div className="modal-overlay" onClick={() => setShowShareModal(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <h3>🎉 Poll Created Successfully!</h3>
+              <h3>Poll Created!</h3>
               <p>Share this link with your friends so they can add their availability:</p>
               
               <div className="share-link-container">
@@ -323,8 +321,7 @@ function CreatePoll() {
               </div>
               
               <div className="share-code-info">
-                <p><strong>Share Code:</strong> {shareCode}</p>
-                <p className="share-instructions">Send this link to your friends and they can add their availability to your event!</p>
+                <p> Note: Polls are deleted after 30 days</p>
               </div>
               
               <div className="modal-actions">

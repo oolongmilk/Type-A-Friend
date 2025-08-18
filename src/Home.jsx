@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 import './Home.css';
+import DuckFace from '/src/assets/duck-face.svg?react'
+import DuckGlasses from '/src/assets/duck-glasses.svg?react'
+import DuckLeaf from '/src/assets/duck-leaf.svg?react'
 
 function Home() {
   return (
@@ -10,6 +13,7 @@ function Home() {
         </div>
         <div className="jumbotron-text-col">
           <p className="jumbotron-subtext">No More Ducking Around</p>
+          <p>Some emotional support tools to manage your Type B folk</p>
         </div>
       </div>
       <div className="faq-section">
@@ -18,24 +22,24 @@ function Home() {
       </div>
       <div className="question-cards">
         <Link to="/find-time" className="question-card">
-          <span role="img" aria-label="calendar">🗓️</span>
+          <DuckFace style={{ width: 48, height: 48 }} />
           <div>
             <h3>So when we going?</h3>
-            <p>"I'm free whenever" isn't helpful.</p>
+            <p>Find a time that works for everyone</p>
           </div>
         </Link>
         <Link to="/event-reminder" className="question-card">
-          <span role="img" aria-label="reminder">🔔</span>
+          <DuckGlasses style={{ width: 48, height: 48 }} />
           <div>
             <h3>When is it happening again?</h3>
-            <p>We've been though this.</p>
+            <p>Send a calendar reminder</p>
           </div>
         </Link>
         <Link to="/whos-going" className="question-card">
-          <span role="img" aria-label="people">👥</span>
+          <DuckLeaf style={{ width: 48, height: 48 }} />
           <div>
             <h3>Who's going again?</h3>
-            <p>If I hear "maybe" one more time I'm gonna lose it.</p>
+            <p>See your guest list</p>
           </div>
         </Link>
       </div>
