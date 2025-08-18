@@ -37,7 +37,7 @@ function App() {
       </Routes>
       <footer className="footer">
         <div className="footer-content">
-          <p className="footer-main">Made with exasperation by a Type A friend</p>
+          <p className="footer-main">Made by a Type A friend</p>
           <div className="footer-links">
             <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer">Ko-fi</a>
             <span>•</span>
