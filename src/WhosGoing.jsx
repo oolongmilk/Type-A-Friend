@@ -16,15 +16,15 @@ function WhosGoing() {
       <div className="tool-placeholder">
         <h2> Who's Going?</h2>
         <p>Enter your sharecode to find the poll results. If you don't have a sharecode, ask your friend or go back to Home page to create your own poll.</p>
-        <form onSubmit={handleSubmit} style={{margin: '2rem 0', display: 'flex', gap: '1rem', justifyContent: 'center'}}>
+  <form onSubmit={handleSubmit} style={{width: '100%', maxWidth: 350, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.7rem', margin: '0 auto 1.5rem auto'}}>
           <input
             type="text"
             placeholder="Enter share code"
             value={shareCode}
             onChange={e => setShareCode(e.target.value)}
-            style={{padding: '0.7rem 1rem', borderRadius: '0.5rem', border: '1px solid #ccc', fontSize: '1rem'}}
+            style={{padding: '0.7rem 1rem', borderRadius: '0.5rem', border: '1px solid #ccc', fontSize: '1rem', width: '100%', maxWidth: 300}}
           />
-          <button type="submit" className="button primary">Submit</button>
+          <button type="submit" className="button primary" style={{width: '100%', maxWidth: 300}}>Submit</button>
         </form>
         <Link to="/">← Back to Home</Link>
       </div>
