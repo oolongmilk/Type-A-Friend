@@ -10,12 +10,12 @@ function WhosGoing() {
       navigate(`/find-time/${shareCode}/results`);
     }
   };
-  
+
   return (
     <main className="main-content">
       <div className="tool-placeholder">
-        <h2>👥 Who's Going Again?</h2>
-        <p>Enter your sharecode to find your poll results</p>
+        <h2> Who's Going?</h2>
+        <p>Enter your sharecode to find the poll results. If you don't have a sharecode, ask your friend or make your own poll.</p>
         <form onSubmit={handleSubmit} style={{margin: '2rem 0', display: 'flex', gap: '1rem', justifyContent: 'center'}}>
           <input
             type="text"

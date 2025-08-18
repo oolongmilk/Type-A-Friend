@@ -24,22 +24,22 @@ function Home() {
         <Link to="/find-time" className="question-card">
           <DuckFace style={{ width: 48, height: 48 }} />
           <div>
-            <h3>So when we going?</h3>
-            <p>Find a time that works for everyone</p>
+            <h3>Find a time that works for everyone</h3>
+            <p>When we going?</p>
           </div>
         </Link>
-        <Link to="/event-reminder" className="question-card">
+        {/* <Link to="/event-reminder" className="question-card">
           <DuckGlasses style={{ width: 48, height: 48 }} />
           <div>
-            <h3>When is it happening again?</h3>
-            <p>Send a calendar reminder</p>
+            <h3>Send a calendar reminder</h3>
+            <p>When is it happening again?</p>
           </div>
-        </Link>
+        </Link> */}
         <Link to="/whos-going" className="question-card">
           <DuckLeaf style={{ width: 48, height: 48 }} />
           <div>
-            <h3>Who's going again?</h3>
-            <p>See your poll results</p>
+            <h3>See your friend's times</h3>
+            <p>Who's going?</p>
           </div>
         </Link>
       </div>
