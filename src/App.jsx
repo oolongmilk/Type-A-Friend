@@ -39,9 +39,9 @@ function App() {
         <div className="footer-content">
           <p className="footer-main">Made by a Type A friend</p>
           <div className="footer-links">
-            <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer">Ko-fi</a>
+            <a href="https://ko-fi.com/emcodesthings" target="_blank" rel="noopener noreferrer">Ko-fi</a>
             <span>•</span>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/e-kwong/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
           <p className="footer-copyright">&copy; 2025 Type A Friend. All rights reserved.</p>
         </div>
