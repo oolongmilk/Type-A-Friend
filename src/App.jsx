@@ -42,6 +42,8 @@ function App() {
             <a href="https://ko-fi.com/emcodesthings" target="_blank" rel="noopener noreferrer">Ko-fi</a>
             <span>•</span>
             <a href="https://www.linkedin.com/in/e-kwong/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <span>•</span>
+            <a href="https://www.instagram.com/emile__unemployed/" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
           <p className="footer-copyright">&copy; 2025 Type A Friend. All rights reserved.</p>
         </div>

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import './Home.css';
 import DuckFace from '/src/assets/duck-face.svg?react'
-import DuckGlasses from '/src/assets/duck-glasses.svg?react'
 import DuckLeaf from '/src/assets/duck-leaf.svg?react'
 
 function Home() {
