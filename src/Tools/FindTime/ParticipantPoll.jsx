@@ -2,33 +2,53 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import './FindTime.css';
 import { formatDateTime, getAllAvailableCombos } from './utils';
+import { ref, onValue, set, update } from 'firebase/database';
+import { database } from '../../firebase';
+
 
 // Utility functions for poll management
-const loadPoll = (shareCode) => {
-  const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
-  return polls[shareCode] || null;
+const loadPollFromFirebase = (shareCode, callback) => {
+  const pollRef = ref(database, 'polls/' + shareCode);
+  try {
+    return onValue(
+      pollRef,
+      (snapshot) => {
+        callback(snapshot.exists() ? snapshot.val() : null, null);
+      },
+      (error) => {
+        console.error('Firebase read error:', error);
+        callback(null, error);
+      }
+    );
+  } catch (err) {
+    console.error('Firebase subscription error:', err);
+    callback(null, err);
+    return undefined;
+  }
 };
 
-const addResponse = (shareCode, participantName, selectedDateTimeCombos) => {
-  const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
-  const pollData = polls[shareCode];
-  if (!pollData) return false;
-
-  // Add or update participant in the participants array
-  if (!pollData.participants) pollData.participants = [];
-  const existingIndex = pollData.participants.findIndex(p => p.name === participantName);
-  if (existingIndex >= 0) {
-    pollData.participants[existingIndex].dateTimeCombos = selectedDateTimeCombos;
-  } else {
-    pollData.participants.push({
-      name: participantName,
-      dateTimeCombos: selectedDateTimeCombos
-    });
-  }
-
-  polls[shareCode] = pollData;
-  localStorage.setItem('timePolls', JSON.stringify(polls));
-  return true;
+const addResponseToFirebase = async (shareCode, participantName, selectedDateTimeCombos) => {
+  const pollRef = ref(database, 'polls/' + shareCode);
+  // Get current poll data
+  return new Promise((resolve, reject) => {
+    onValue(pollRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        resolve(false);
+        return;
+      }
+      const pollData = snapshot.val();
+      let participants = pollData.participants || [];
+      const existingIndex = participants.findIndex(p => p.name === participantName);
+      if (existingIndex >= 0) {
+        participants[existingIndex].dateTimeCombos = selectedDateTimeCombos;
+      } else {
+        participants.push({ name: participantName, dateTimeCombos: selectedDateTimeCombos });
+      }
+      update(pollRef, { participants })
+        .then(() => resolve(true))
+        .catch((err) => reject(err));
+    }, { onlyOnce: true });
+  });
 };
 
 
@@ -76,35 +96,49 @@ function ParticipantPoll() {
     };
   };
 
-  // Load poll and compute all available combos from all participants
+  // Load poll and compute all available combos from all participants (Firebase)
   useEffect(() => {
     if (shareCode) {
-      const poll = loadPoll(shareCode);
-      if (poll) {
-        setPollData(poll);
-        setAllAvailableCombos(getAllAvailableCombos(poll.participants));
-        setMode('participate');
-      } else {
-        setMode('not-found');
-      }
+      // Subscribe to real-time updates
+      const unsubscribe = loadPollFromFirebase(shareCode, (poll, error) => {
+        if (error) {
+          setMode('not-found');
+          alert('Error loading poll: ' + error.message);
+          return;
+        }
+        if (poll) {
+          setPollData(poll);
+          setAllAvailableCombos(getAllAvailableCombos(poll.participants || []));
+          setMode('participate');
+        } else {
+          setMode('not-found');
+        }
+      });
+      return () => {
+        // Unsubscribe from Firebase listener
+        if (typeof unsubscribe === 'function') unsubscribe();
+      };
     }
   }, [shareCode]);
 
-  const submitResponse = () => {
+  const submitResponse = async () => {
     if (!participantName.trim()) {
       alert('Please enter your name');
       return;
     }
-    
     if (selectedDateTimeCombos.size === 0) {
       alert('Please select at least one time slot');
       return;
     }
-    
-    const success = addResponse(shareCode, participantName.trim(), Array.from(selectedDateTimeCombos));
-    if (success) {
-      setPollData(loadPoll(shareCode));
-      navigate(`/find-time/${shareCode}/results`);
+    try {
+      const success = await addResponseToFirebase(shareCode, participantName.trim(), Array.from(selectedDateTimeCombos));
+      if (success) {
+        navigate(`/find-time/${shareCode}/results`);
+      } else {
+        alert('Poll not found or could not update.');
+      }
+    } catch (err) {
+      alert('Error updating poll: ' + err.message);
     }
   };
 
