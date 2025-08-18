@@ -1,3 +1,51 @@
+.jumbotron-image-col {
+  width: 40%;
+  min-width: 180px;
+  max-width: 400px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jumbotron-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.jumbotron-image-col {
+  flex: 0 0 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.jumbotron-text-col {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+@media (max-width: 900px) {
+  .jumbotron-row {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+  }
+  .jumbotron-text-col {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .jumbotron-image-col {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+}
 /* Center FAQ section text */
 .faq-section {
   text-align: center;
@@ -29,12 +77,12 @@
 }
 
 .jumbotron-image {
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  height: 95%;
+  width: auto;
+  max-height: 500px;
+  max-width: 100%;
+  margin-bottom: 0;
+  display: block;
 }
 .jumbotron h2 {
   margin: 0;
@@ -45,7 +93,9 @@
 .jumbotron-subtext {
   margin-top: 1rem;
   color: #555;
-  font-size: 1.1rem;
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .question-cards {

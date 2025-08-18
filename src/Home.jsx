@@ -4,9 +4,13 @@ import './Home.css';
 function Home() {
   return (
     <main className="main-content">
-      <div className="jumbotron">
-        <img src="/iasip-meme.jpeg" alt="It's Always Sunny meme" className="jumbotron-image" />
-        <p className="jumbotron-subtext">Type A's thank you for your service 🫵 </p>
+      <div className="jumbotron jumbotron-row">
+        <div className="jumbotron-image-col">
+          <img src="/duck-knife.png" alt="duck holding knife" className="jumbotron-image" />
+        </div>
+        <div className="jumbotron-text-col">
+          <p className="jumbotron-subtext">No More Ducking Around</p>
+        </div>
       </div>
       <div className="faq-section">
         <h2>FAQ </h2>
