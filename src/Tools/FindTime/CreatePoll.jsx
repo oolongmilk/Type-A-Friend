@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { firebase as firebaseApp } from '../../firebase';
+import { formatDateTime } from './utils';
 
 // Utility functions for poll management
 const generateShareCode = () => {
@@ -73,7 +76,7 @@ function CreatePoll() {
 
   const calendarData = getCurrentMonthDays();
 
-  const createPoll = () => {
+  const createPoll = async () => {
     if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
       alert('Please enter an event name, your name, and at least one date/time combination');
       return;
@@ -92,18 +95,18 @@ function CreatePoll() {
       ]
     };
 
-    // Save to localStorage in the correct format
-    const polls = JSON.parse(localStorage.getItem('timePolls') || '{}');
-    polls[newShareCode] = newPoll;
-    localStorage.setItem('timePolls', JSON.stringify(polls));
-
-    setShareCode(newShareCode);
-    setShowShareModal(true);
+    try {
+      const db = getFirestore(firebaseApp);
+      await setDoc(doc(db, 'polls', newShareCode), newPoll);
+      setShareCode(newShareCode);
+      setShowShareModal(true);
+    } catch (error) {
+      alert('Error saving poll to database: ' + error.message);
+    }
   };
 
-  const toggleDateSelection = (date) => {
+  const toggleDateSelection = (newDate) => {
     // Set the current selected date (only one at a time for the picker)
-    const newDate = currentSelectedDate === date ? '' : date;
     setCurrentSelectedDate(newDate);
     
     // Clear selected times when date changes
@@ -123,14 +126,6 @@ function CreatePoll() {
     setCurrentSelectedTimes(newSelectedTimes);
   };
 
-  const formatDateTime = (dateTimeString) => {
-    const [date, time] = dateTimeString.split('T');
-    const dateObj = new Date(date);
-    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-    const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
-    const day = dateObj.getDate();
-    return `${dayName}, ${month} ${day} at ${time}`;
-  };
 
   // Helper functions for date-time combo management
   const addDateTimeCombo = () => {
@@ -225,6 +220,7 @@ function CreatePoll() {
                   <div className="selection-display">
                     <span className="selection-label">Selected Date:</span>
                     <span className="selection-value">
+
                       {currentSelectedDate ? formatDateTime(currentSelectedDate + 'T00:00').split(' at')[0] : 'None'}
                     </span>
                   </div>

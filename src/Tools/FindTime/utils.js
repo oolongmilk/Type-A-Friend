@@ -3,11 +3,12 @@
 export function formatDateTime(dateTimeString) {
   if (!dateTimeString) return '';
   const [date, time] = dateTimeString.split('T');
-  const dateObj = new Date(date);
+  // Parse as local date, not UTC
+  const [year, month, day] = date.split('-');
+  const dateObj = new Date(Number(year), Number(month) - 1, Number(day));
   const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-  const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
-  const day = dateObj.getDate();
-  return `${dayName}, ${month} ${day} at ${time}`;
+  const monthName = dateObj.toLocaleDateString('en-US', { month: 'short' });
+  return `${dayName}, ${monthName} ${dateObj.getDate()} at ${time}`;
 }
 
 // Aggregate all available dateTimeCombos from all participants
