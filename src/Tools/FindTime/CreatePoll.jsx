@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { firebase as firebaseApp } from '../../firebase';
+import { ref, set } from 'firebase/database';
+import { database } from '../../firebase';
 import { formatDateTime } from './utils';
 
 // Utility functions for poll management
@@ -96,8 +96,9 @@ function CreatePoll() {
     };
 
     try {
-      const db = getFirestore(firebaseApp);
-      await setDoc(doc(db, 'polls', newShareCode), newPoll);
+      await set(ref(database, 'polls/' + newShareCode), newPoll);
+      console.log("Event written successfully!");
+      alert("Data saved!"); // Simple feedback
       setShareCode(newShareCode);
       setShowShareModal(true);
     } catch (error) {
