@@ -4,41 +4,10 @@ import FindTime from './Tools/FindTime/FindTime.jsx';
 import PollResults from './Tools/FindTime/PollResults.jsx';
 import About from './About.jsx';
 import WhosGoing from './WhosGoing.jsx';
+import ForTypeBs from './ForTypeBs.jsx';
 import './App.css';
 
-// function Tools() {
-//   return (
-//     <main className="main-content">
-//       <div className="tool-placeholder">
-//         <h2>🛠️ All Tools</h2>
-//         <p>Your one-stop shop for managing your Type B friends!</p>
-//         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
-//           <Link to="/find-time" style={{ padding: '1rem 2rem', background: '#1976d2', color: 'white', borderRadius: '0.5rem', textDecoration: 'none' }}>Find Time Tool</Link>
-//           <Link to="/event-reminder" style={{ padding: '1rem 2rem', background: '#ff9800', color: 'white', borderRadius: '0.5rem', textDecoration: 'none' }}>Event Reminder</Link>
-//           <Link to="/whos-going" style={{ padding: '1rem 2rem', background: '#4caf50', color: 'white', borderRadius: '0.5rem', textDecoration: 'none' }}>Who's Going</Link>
-//         </div>
-//         <Link to="/">← Back to Home</Link>
-//       </div>
-//     </main>
-//   );
-// }
 
-
-function ForTypeBs() {
-  return (
-    <main className="main-content">
-      <div className="tool-placeholder">
-        <h2>😌 Hey Type B's!</h2>
-        <p>Your Type A friend sent you here, didn't they?</p>
-        <p>Don't worry, we love you too. Maybe just... check your calendar once in a while? 😉</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    </main>
-  );
-}
-
-function EventReminder() {
-}
 
 function App() {
   return (
@@ -60,8 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/find-time" element={<FindTime />} />
         <Route path="/find-time/:shareCode" element={<FindTime />} />
-        <Route path="/find-time/:shareCode/results" element={<PollResults />} />
-        <Route path="/event-reminder" element={<EventReminder />} />
+        <Route path="/find-time/:shareCode/results" element={<PollResults />} />>
         <Route path="/whos-going" element={<WhosGoing />} />
         {/* <Route path="/tools" element={<Tools />} /> */}
         <Route path="/about" element={<About />} />
