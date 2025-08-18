@@ -13,7 +13,7 @@ function Home() {
         </div>
         <div className="jumbotron-text-col">
           <p className="jumbotron-subtext">No More Ducking Around</p>
-          <p>Some emotional support tools to manage your Type B folk</p>
+          <p>Some emotional support tools for all my Type A friends</p>
         </div>
       </div>
       <div className="faq-section">
@@ -39,7 +39,7 @@ function Home() {
           <DuckLeaf style={{ width: 48, height: 48 }} />
           <div>
             <h3>Who's going again?</h3>
-            <p>See your guest list</p>
+            <p>See your poll results</p>
           </div>
         </Link>
       </div>

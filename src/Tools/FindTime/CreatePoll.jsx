@@ -321,7 +321,9 @@ function CreatePoll() {
               </div>
               
               <div className="share-code-info">
-                <p> Note: Polls are deleted after 30 days</p>
+                <p>Your share code: <strong>{shareCode}</strong></p>
+                <p>Copy this code so you can revisit your poll at a later time from the Home page!</p>
+                <p>Note: Polls are deleted after 30 days</p>
               </div>
               
               <div className="modal-actions">

@@ -3,6 +3,7 @@ import Home from './Home.jsx';
 import FindTime from './Tools/FindTime/FindTime.jsx';
 import PollResults from './Tools/FindTime/PollResults.jsx';
 import About from './About.jsx';
+import WhosGoing from './WhosGoing.jsx';
 import './App.css';
 
 // function Tools() {
@@ -37,27 +38,6 @@ function ForTypeBs() {
 }
 
 function EventReminder() {
-  return (
-    <main className="main-content">
-      <div className="tool-placeholder">
-        <h2>🔔 Event Reminder</h2>
-        <p>Tool coming soon! Here you'll keep track of when the event is happening (again).</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    </main>
-  );
-}
-
-function WhosGoing() {
-  return (
-    <main className="main-content">
-      <div className="tool-placeholder">
-        <h2>👥 Who's Going Again?</h2>
-        <p>Tool coming soon! Here you'll track the maybes, the definites, and the "I'll let you know"s.</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    </main>
-  );
 }
 
 function App() {

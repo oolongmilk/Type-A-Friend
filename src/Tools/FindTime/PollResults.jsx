@@ -146,7 +146,7 @@ const PollResults = () => {
                 </ul>
               </div>
             ) : (
-              <div className="suggestion-section"><h3>No overlaps</h3></div>
+              <div className="suggestion-section"><h3>Wow, no overlaps. Back to the drawing board?</h3></div>
             )}
             {/* Calendar grid */}
             <div className="calendar-container">
@@ -198,7 +198,7 @@ const PollResults = () => {
                 {pollData.participants.map((p, index) => (
                   <div key={index} className="participant-item">
                     <strong>{p.name}</strong>
-                    <span className="participant-count">({p.dateTimeCombos.length} times selected)</span>
+                    <span className="participant-count"> ({p.dateTimeCombos.length} times selected)</span>
                   </div>
                 ))}
               </div>
