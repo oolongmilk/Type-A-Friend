@@ -4,7 +4,8 @@ import './FindTime.css';
 import { formatDateTime, getAllAvailableCombos } from './utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
-import { getCurrentMonthDays, timeSlots as times } from './utils';
+import { getCurrentMonthDays } from './utils';
+import TimeGrid from './TimeGrid';
 import CalendarGrid from './CalendarGrid';
 import { spinner } from './spinner';
 
@@ -246,23 +247,11 @@ function ParticipantPoll() {
                       </span>
                     </div>
                   </div>
-                  <div className="time-grid">
-                    {times.map(time => {
-                      const isExisting = getExistingTimesForDate(currentSelectedDate).includes(time);
-                      return (
-                        <button
-                          key={time}
-                          className={`time-button ${
-                            currentSelectedTimes.has(time) ? 'selected' : ''
-                          } ${isExisting ? 'existing' : ''}`}
-                          onClick={() => toggleTimeForDate(time)}
-                        >
-                          {time}
-                          {isExisting && <span className="existing-indicator">✓</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <TimeGrid
+                    selectedTimes={currentSelectedTimes}
+                    onTimeToggle={toggleTimeForDate}
+                    existingTimes={currentSelectedDate ? getExistingTimesForDate(currentSelectedDate) : []}
+                  />
                   <div className="add-section">
                     <button 
                       onClick={addSelectedTimesToCombos}

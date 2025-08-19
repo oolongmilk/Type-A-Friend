@@ -1,0 +1,15 @@
+/* Styles for PollResults details box */
+.calendar-details-box {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.calendar-details-title {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #1976d2;
+}

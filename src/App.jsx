@@ -1,7 +1,8 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Home from './Home.jsx';
-import FindTime from './Tools/FindTime/FindTime.jsx';
+import CreatePoll from './Tools/FindTime/CreatePoll.jsx';
+import ParticipantPoll from './Tools/FindTime/ParticipantPoll.jsx';
 import PollResults from './Tools/FindTime/PollResults.jsx';
 import About from './About.jsx';
 import WhosGoing from './WhosGoing.jsx';
@@ -51,8 +52,8 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/find-time" element={<FindTime />} />
-        <Route path="/find-time/:shareCode" element={<FindTime />} />
+        <Route path="/find-time" element={<CreatePoll />} />
+        <Route path="/find-time/:shareCode" element={<ParticipantPoll />} />
         <Route path="/find-time/:shareCode/results" element={<PollResults />} />
         <Route path="/whos-going" element={<WhosGoing />} />
         <Route path="/about" element={<About />} />

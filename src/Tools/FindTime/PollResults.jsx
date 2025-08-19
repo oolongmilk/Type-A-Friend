@@ -5,6 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
 import './FindTime.css';
+import './PollResults.css';
 import { spinner } from './spinner.jsx';
 import CalendarGrid from './CalendarGrid';
 

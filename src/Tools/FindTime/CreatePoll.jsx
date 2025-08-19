@@ -4,7 +4,7 @@ import './FindTime.css';
 import { ref, set } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './utils';
-import { timeSlots } from './utils';
+import TimeGrid from './TimeGrid';
 import { getCurrentMonthDays } from './utils';
 import CalendarGrid from './CalendarGrid';
 
@@ -172,17 +172,10 @@ function CreatePoll() {
                   </div>
                 </div>
                 
-                <div className="time-grid">
-                  {timeSlots.map(time => (
-                    <button
-                      key={time}
-                      className={`time-button ${currentSelectedTimes.has(time) ? 'selected' : ''}`}
-                      onClick={() => toggleTimeSlotSelection(time)}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
+                <TimeGrid
+                  selectedTimes={currentSelectedTimes}
+                  onTimeToggle={toggleTimeSlotSelection}
+                />
                 
                 <div className="add-section">
                   <button 

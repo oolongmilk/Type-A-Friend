@@ -1,5 +1,5 @@
 import React from 'react';
-import './FindTime.css';
+import './calendar.css';
 
 /**
  * CalendarGrid component for rendering a 6x7 calendar grid with custom day logic.
