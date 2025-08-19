@@ -123,4 +123,10 @@
     min-width: 0;
     grid-template-columns: repeat(7, minmax(0, 1fr));
   }
+
+  .calendar-day {
+    min-height: 32px;
+    font-size: 0.8rem;
+    padding: 0.2rem;
+  }
 }
