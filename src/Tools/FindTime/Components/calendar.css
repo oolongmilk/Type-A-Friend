@@ -105,17 +105,3 @@
 .calendar-day.has-existing:hover {
   background: #bbdefb;
 }
-
-.calendar-existing-indicator {
-  position: absolute;
-  top: 0.2rem;
-  right: 0.3rem;
-  font-size: 0.7rem;
-  color: #4caf50;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.calendar-day {
-  position: relative;
-}

@@ -134,10 +134,16 @@ const PollResults = () => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
                 if (participantsForDay && participantsForDay.length > 0) {
                   return (
-                    <span className="calendar-existing-indicator" style={{ display: 'flex', gap: 2 }}>
+                    <span className="calendar-existing-indicator">
                       {participantsForDay.map((p, i) => {
                         const DuckIcon = duckMap[p.color];
-                        return <DuckIcon key={p.name + i} style={{ width: 18, height: 18, marginRight: 1 }} title={p.name} />;
+                        return (
+                          <DuckIcon
+                            key={p.name + i}
+                            style={{ width: 18, height: 18, marginRight: 1, marginBottom: 1, flex: '0 0 18px' }}
+                            title={p.name}
+                          />
+                        );
                       })}
                     </span>
                   );
