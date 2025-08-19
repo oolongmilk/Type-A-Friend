@@ -1,47 +1,39 @@
 
-import { formatDateTime } from './utils';
+import { formatDateTime, getCurrentMonthDays } from './utils';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
 import './FindTime.css';
-import DuckFace from '/src/assets/duck-face.svg?react'
-import { getCurrentMonthDays } from './utils';
+import { spinner } from './spinner.jsx';
 
 const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
   const [selectedDate, setSelectedDate] = useState(null);
 
-//   useEffect(() => {
-//     if (shareCode) {
-//       const pollRef = ref(database, 'polls/' + shareCode);
-//       const unsubscribe = onValue(
-//         pollRef,
-//         (snapshot) => {
-//           setPollData(snapshot.exists() ? snapshot.val() : null);
-//         },
-//         (error) => {
-//           setPollData(null);
-//           alert('Error loading poll: ' + error.message);
-//         }
-//       );
-//       return () => {
-//         if (typeof unsubscribe === 'function') unsubscribe();
-//       };
-//     }
-//   }, [shareCode]);
+  useEffect(() => {
+    if (shareCode) {
+      const pollRef = ref(database, 'polls/' + shareCode);
+      const unsubscribe = onValue(
+        pollRef,
+        (snapshot) => {
+          setPollData(snapshot.exists() ? snapshot.val() : null);
+        },
+        (error) => {
+          setPollData(null);
+          alert('Error loading poll: ' + error.message);
+        }
+      );
+      return () => {
+        if (typeof unsubscribe === 'function') unsubscribe();
+      };
+    }
+  }, [shareCode]);
 
   if (pollData === undefined) {
     // Loading spinner with duck-face
-    return (
-      <main className="main-content">
-        <div className="poll-container" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320}}>
-          <DuckFace alt="Loading..." style={{width: 90, height: 90, marginBottom: 24, animation: 'spin 1.2s linear infinite'}} />
-          <div style={{fontSize: '1.2rem', color: '#1976d2', fontWeight: 600}}>Loading...</div>
-        </div>
-      </main>
-    );
+    return spinner()
   }
   
   if (!pollData) {

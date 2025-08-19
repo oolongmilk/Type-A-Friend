@@ -5,6 +5,7 @@ import { formatDateTime, getAllAvailableCombos } from './utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
 import { getCurrentMonthDays, timeSlots as times } from './utils';
+import { spinner } from './spinner';
 
 // Utility functions for poll management
 const loadPollFromFirebase = (shareCode, callback) => {
@@ -343,13 +344,7 @@ function ParticipantPoll() {
 
 
 
-  return (
-    <main className="main-content">
-      <div className="poll-container">
-        <h2>Loading...</h2>
-      </div>
-    </main>
-  );
+  return spinner();
 }
 
 export default ParticipantPoll;

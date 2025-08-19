@@ -1,5 +1,6 @@
 // Shared utility functions for Type A Friend
 
+
 export function formatDateTime(dateTimeString) {
   if (!dateTimeString) return '';
   const [date, time] = dateTimeString.split('T');
@@ -63,3 +64,5 @@ export function getAllAvailableCombos(participants) {
       monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     };
   };
+
+ 
