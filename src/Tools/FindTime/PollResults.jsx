@@ -192,20 +192,10 @@ const PollResults = () => {
           </div>
           {/* Right column: participants and share */}
           <div className="right-column">
-            <div className="participants-section">
-              <h3>Participants</h3>
-              <div className="participants-list">
-                {pollData.participants.map((p, index) => (
-                  <div key={index} className="participant-item">
-                    <strong>{p.name}</strong>
-                    <span className="participant-count"> ({p.dateTimeCombos.length} times selected)</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            
             {/* New details section */}
-            <div className="calendar-details-box" style={{background: '#fff', border: '1px solid #e0e0e0', borderRadius: '1rem', margin: '1.5rem 0', padding: '1.2rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)'}}>
-              <h3 style={{marginTop: 0, fontSize: '1.1rem', color: '#1976d2'}}>Click on a date for more details</h3>
+            <div className="calendar-details-box">
+              <h3 className="calendar-details-title">Click on a date for more details</h3>
               {selectedDate && dateMap[selectedDate] ? (
                 <div>
                   <div style={{fontWeight: 600, marginBottom: 4}}>
@@ -224,6 +214,19 @@ const PollResults = () => {
                 <div style={{color: '#888', fontSize: '0.98em'}}>No date selected.</div>
               )}
             </div>
+
+            <div className="participants-section">
+              <h3>Participants</h3>
+              <div className="participants-list">
+                {pollData.participants.map((p, index) => (
+                  <div key={index} className="participant-item">
+                    <strong>{p.name}</strong>
+                    <span className="participant-count"> ({p.dateTimeCombos.length} times selected)</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
             <div className="share-section">
               <h3>Share This Poll</h3>
               <div className="share-link">
