@@ -33,11 +33,27 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
   .right-column {
     border-left: none;
     border-top: 2px solid #e0e0e0;
     padding-left: 0;
+    padding-top: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .two-column-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .left-column, .right-column {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .right-column {
+    border-top: 2px solid #e0e0e0;
+    border-left: none;
     padding-top: 1.5rem;
   }
 }

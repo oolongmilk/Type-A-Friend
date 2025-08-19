@@ -185,7 +185,7 @@ function CreatePoll() {
             </div>
 
             <div className="form-section">
-              <label>Step 1: Select dates that work for you:</label>
+              <label>Step 1: Select dates that work:</label>
               <div className="calendar-container">
                 <div className="calendar-header">
                   <h3>{calendarData.monthName}</h3>
