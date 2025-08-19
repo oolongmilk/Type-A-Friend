@@ -7,6 +7,7 @@ import About from './About.jsx';
 import WhosGoing from './WhosGoing.jsx';
 import ForTypeBs from './ForTypeBs.jsx';
 import './App.css';
+import ScrollToTop from './ScrollToTop.jsx';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <ScrollToTop />
       <nav className="navbar">
         <div className="navbar-content">
           <div className="navbar-logo">
