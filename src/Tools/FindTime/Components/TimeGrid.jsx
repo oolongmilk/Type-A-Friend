@@ -1,5 +1,5 @@
 import React from 'react';
-import './FindTime.css';
+import '../FindTime.css';
 import './TimeGrid.css';
 
 /**

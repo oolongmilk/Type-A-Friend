@@ -5,7 +5,7 @@ import CreatePoll from './Tools/FindTime/CreatePoll.jsx';
 import ParticipantPoll from './Tools/FindTime/ParticipantPoll.jsx';
 import PollResults from './Tools/FindTime/PollResults.jsx';
 import About from './About.jsx';
-import WhosGoing from './WhosGoing.jsx';
+import WhosGoing from './Tools/WhosGoing/WhosGoing.jsx';
 import ForTypeBs from './ForTypeBs.jsx';
 import './App.css';
 import ScrollToTop from './ScrollToTop.jsx';
