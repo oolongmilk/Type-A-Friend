@@ -253,6 +253,12 @@ function ParticipantPoll() {
                     onTimeToggle={toggleTimeForDate}
                     existingTimes={currentSelectedDate ? getExistingTimesForDate(currentSelectedDate) : []}
                   />
+                  
+                  <div className="legend">
+                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
+                    <span style={{color: '#388e3c'}}>Times that work for other people</span>
+                  </div>
+
                   <div className="add-section">
                     <button 
                       onClick={addSelectedTimesToCombos}
@@ -261,10 +267,6 @@ function ParticipantPoll() {
                     >
                       Add Date & Times ({currentSelectedTimes.size})
                     </button>
-                  </div>
-                  <div className="legend">
-                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
-                    <span style={{color: '#388e3c'}}>Times that work for other people</span>
                   </div>
                 </div>
               </div>
