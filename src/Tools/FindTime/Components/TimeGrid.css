@@ -44,7 +44,7 @@
   background: #c8e6c8;
 }
 
-.time-button .existing-indicator {
+.time-button existing-indicator {
   position: absolute;
   top: 0.2rem;
   right: 0.3rem;

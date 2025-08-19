@@ -33,7 +33,7 @@ export default function TimeGrid({ selectedTimes, onTimeToggle, existingTimes = 
             type="button"
           >
             {time}
-            {isExisting && <span className="existing-indicator" title="Already picked">✓</span>}
+            {isExisting && <span className="time-existing-indicator" title="Already picked">✓</span>}
           </button>
         );
       })}
