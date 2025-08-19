@@ -5,6 +5,7 @@ import { ref, set } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
+import SelectedTimesList from './Components/SelectedTimesList';
 import ShareLinkModal from './Components/ShareLinkModal';
 import { getCurrentMonthDays } from './Utils/utils';
 import CalendarGrid from './Components/CalendarGrid';
@@ -195,26 +196,11 @@ function CreatePoll() {
           <div className="right-column">
             <div className="form-section">
               <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
-              <div className="selected-combos">
-                {selectedDateTimeCombos.size === 0 ? (
-                  <p className="no-selections">No times selected yet. Use the controls on the left to add date/time combinations.</p>
-                ) : (
-                  <div className="combo-list">
-                    {Array.from(selectedDateTimeCombos).sort().map(combo => (
-                      <div key={combo} className="combo-item">
-                        <span className="combo-text">{formatDateTime(combo)}</span>
-                        <button 
-                          onClick={() => removeDateTimeCombo(combo)}
-                          className="remove-button"
-                          title="Remove this time"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <SelectedTimesList
+                combos={selectedDateTimeCombos}
+                onRemove={removeDateTimeCombo}
+                formatCombo={formatDateTime}
+              />
             </div>
 
             <div className="form-actions">

@@ -6,6 +6,7 @@ import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
 import { getCurrentMonthDays } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
+import SelectedTimesList from './Components/SelectedTimesList';
 import CalendarGrid from './Components/CalendarGrid';
 import { spinner } from './Components/Spinner';
 
@@ -271,26 +272,11 @@ function ParticipantPoll() {
             <div className="right-column">
               <div className="form-section">
                 <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
-                <div className="selected-combos">
-                  {selectedDateTimeCombos.size === 0 ? (
-                    <p className="no-selections">No times selected yet. Use the controls on the left to add date/time combinations.</p>
-                  ) : (
-                    <div className="combo-list">
-                      {Array.from(selectedDateTimeCombos).sort().map(combo => (
-                        <div key={combo} className="combo-item">
-                          <span className="combo-text">{formatDateTime(combo)}</span>
-                          <button 
-                            onClick={() => removeFromVisualPicker(combo)}
-                            className="remove-button"
-                            title="Remove this time"
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <SelectedTimesList
+                  combos={selectedDateTimeCombos}
+                  onRemove={removeFromVisualPicker}
+                  formatCombo={formatDateTime}
+                />
               </div>
               <div className="form-actions">
                 <button 
