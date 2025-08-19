@@ -154,10 +154,8 @@ const PollResults = () => {
                   <span style={{display: 'inline-block', width: 18, height: 18, verticalAlign: 'middle', marginRight: 4}}>
                     {(() => {
                       // Use the first participant's duckColor as the legend example, fallback to yellow
-                      const first = pollData.participants && pollData.participants[0];
-                      const color = first && first.duckColor ? first.duckColor : 'yellow';
-                      const DuckIcon = duckMap[color] || duckMap['yellow'];
-                      return <DuckIcon style={{width: 18, height: 18, verticalAlign: 'middle'}} />;
+                      const DuckIcon = duckMap['yellow'];
+                      return <DuckIcon style={{width: 18, height: 18}} />;
                     })()}
                   </span>
                   = Someone is available
