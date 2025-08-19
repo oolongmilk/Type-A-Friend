@@ -51,9 +51,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/find-time" element={<FindTime />} />
         <Route path="/find-time/:shareCode" element={<FindTime />} />
-  <Route path="/find-time/:shareCode/results" element={<PollResults />} />
+        <Route path="/find-time/:shareCode/results" element={<PollResults />} />
         <Route path="/whos-going" element={<WhosGoing />} />
-        {/* <Route path="/tools" element={<Tools />} /> */}
         <Route path="/about" element={<About />} />
         <Route path="/for-type-bs" element={<ForTypeBs />} />
       </Routes>
