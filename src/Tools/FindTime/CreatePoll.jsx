@@ -114,7 +114,7 @@ function CreatePoll() {
   return (
     <main className="main-content">
       <div className="poll-container">
-        <h2>🗓️ Create Time Poll</h2>
+        <h2>Create Time Poll</h2>
         
         <div className="two-column-layout">
           {/* Left Column - Event Setup and Selection */}
