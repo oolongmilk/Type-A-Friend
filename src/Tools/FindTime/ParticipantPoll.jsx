@@ -31,6 +31,7 @@ const loadPollFromFirebase = (shareCode, callback) => {
   }
 };
 
+const duckColors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'white', 'black'];
 const addResponseToFirebase = async (shareCode, participantName, selectedDateTimeCombos) => {
   const pollRef = ref(database, 'polls/' + shareCode);
   // Get current poll data
@@ -45,8 +46,16 @@ const addResponseToFirebase = async (shareCode, participantName, selectedDateTim
       const existingIndex = participants.findIndex(p => p.name === participantName);
       if (existingIndex >= 0) {
         participants[existingIndex].dateTimeCombos = selectedDateTimeCombos;
+        // preserve their duckColor if already set
       } else {
-        participants.push({ name: participantName, dateTimeCombos: selectedDateTimeCombos });
+        // Assign a duck color based on their index in the new array
+        const colorIndex = participants.length % duckColors.length;
+        const color = duckColors[colorIndex];
+        participants.push(
+          { name: participantName,
+            dateTimeCombos: selectedDateTimeCombos,
+            color
+          });
       }
       update(pollRef, { participants })
         .then(() => resolve(true))
@@ -253,7 +262,7 @@ function ParticipantPoll() {
                     onTimeToggle={toggleTimeForDate}
                     existingTimes={currentSelectedDate ? getExistingTimesForDate(currentSelectedDate) : []}
                   />
-                  
+
                   <div className="legend">
                     <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
                     <span style={{color: '#388e3c'}}>Times that work for other people</span>

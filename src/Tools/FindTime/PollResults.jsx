@@ -8,6 +8,7 @@ import './FindTime.css';
 import './PollResults.css';
 import { spinner } from './Components/Spinner.jsx';
 import CalendarGrid from './Components/CalendarGrid.jsx';
+import ParticipantsSection from './Components/ParticipantsSection.jsx';
 
 const PollResults = () => {
   const { shareCode } = useParams();
@@ -169,17 +170,7 @@ const PollResults = () => {
               )}
             </div>
 
-            <div className="participants-section">
-              <h3>Participants</h3>
-              <div className="participants-list">
-                {pollData.participants.map((p, index) => (
-                  <div key={index} className="participant-item">
-                    <strong>{p.name}</strong>
-                    <span className="participant-count"> ({p.dateTimeCombos.length} times selected)</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ParticipantsSection participants={pollData.participants} />
 
             <div className="share-section">
               <h3>Share This Poll</h3>

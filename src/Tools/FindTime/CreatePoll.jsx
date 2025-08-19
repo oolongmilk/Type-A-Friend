@@ -44,11 +44,13 @@ function CreatePoll() {
     const newPoll = {
       id: newShareCode,
       eventName: eventName.trim(),
+      color: 'glasses', // Default duck color for the poll owner
       owner: creatorName.trim(),
       participants: [
         {
           name: creatorName.trim(),
-          dateTimeCombos: Array.from(selectedDateTimeCombos)
+          dateTimeCombos: Array.from(selectedDateTimeCombos),
+          color: 'glasses'
         }
       ]
     };
