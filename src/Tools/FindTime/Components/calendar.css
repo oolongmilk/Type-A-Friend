@@ -1,20 +1,28 @@
-/* Weekday header row */
+/* Calendar Styles */
+.calendar-container {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  margin-top: 0.5rem;
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  color: #1976d2;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.2rem;
-  margin-bottom: 0.5rem;
-}
-.date-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.8rem;
-  margin-top: 0.5rem;
-}
-
-.date-button {
-  background: white;
-  border: 2px solid #e0e0e0;
   margin-bottom: 0.5rem;
 }
 

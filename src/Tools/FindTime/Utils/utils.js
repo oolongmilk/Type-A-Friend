@@ -26,7 +26,6 @@ export function getAllAvailableCombos(participants) {
 }
 
 
-
   // Calendar grid logic (match CreatePoll)
   export function getCurrentMonthDays() {
     const now = new Date();
