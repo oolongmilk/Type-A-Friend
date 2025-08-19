@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
 import { ref, set } from 'firebase/database';
 import { database } from '../../firebase';
-import { formatDateTime } from './utils';
-import TimeGrid from './TimeGrid';
-import { getCurrentMonthDays } from './utils';
-import CalendarGrid from './CalendarGrid';
+import { formatDateTime } from './Utils/utils';
+import TimeGrid from './Components/TimeGrid';
+import { getCurrentMonthDays } from './Utils/utils';
+import CalendarGrid from './Components/CalendarGrid';
 
 // Utility functions for poll management
 const generateShareCode = () => {

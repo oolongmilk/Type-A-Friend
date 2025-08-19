@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import './FindTime.css';
-import { formatDateTime, getAllAvailableCombos } from './utils';
+import { formatDateTime, getAllAvailableCombos } from './Utils/utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
-import { getCurrentMonthDays } from './utils';
-import TimeGrid from './TimeGrid';
-import CalendarGrid from './CalendarGrid';
-import { spinner } from './spinner';
+import { getCurrentMonthDays } from './Utils/utils';
+import TimeGrid from './Components/TimeGrid';
+import CalendarGrid from './Components/CalendarGrid';
+import { spinner } from './Components/Spinner';
 
 // Utility functions for poll management
 const loadPollFromFirebase = (shareCode, callback) => {

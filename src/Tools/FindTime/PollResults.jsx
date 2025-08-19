@@ -1,13 +1,13 @@
 
-import { formatDateTime, getCurrentMonthDays } from './utils';
+import { formatDateTime, getCurrentMonthDays } from './Utils/utils.js';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
 import './FindTime.css';
 import './PollResults.css';
-import { spinner } from './spinner.jsx';
-import CalendarGrid from './CalendarGrid';
+import { spinner } from './Components/Spinner.jsx';
+import CalendarGrid from './Components/CalendarGrid.jsx';
 
 const PollResults = () => {
   const { shareCode } = useParams();
