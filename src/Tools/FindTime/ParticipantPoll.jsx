@@ -4,7 +4,7 @@ import './FindTime.css';
 import { formatDateTime, getAllAvailableCombos } from './utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
-
+import { getCurrentMonthDays, timeSlots as times } from './utils';
 
 // Utility functions for poll management
 const loadPollFromFirebase = (shareCode, callback) => {
@@ -64,37 +64,6 @@ function ParticipantPoll() {
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
   const [allAvailableCombos, setAllAvailableCombos] = useState(new Set());
-
-  const getCurrentMonthDays = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-    const days = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    for (let i = 0; i < 42; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
-      const dateString = currentDate.toISOString().split('T')[0];
-      const isCurrentMonth = currentDate.getMonth() === month;
-      const isToday = currentDate.getTime() === today.getTime();
-      const isPast = currentDate < today;
-      days.push({
-        date: dateString,
-        day: currentDate.getDate(),
-        isCurrentMonth,
-        isToday,
-        isPast
-      });
-    }
-    return {
-      days,
-      monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    };
-  };
 
   // Load poll and compute all available combos from all participants (Firebase)
   useEffect(() => {
@@ -202,12 +171,6 @@ function ParticipantPoll() {
     return times;
   };
 
-  const times = [
-    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
-    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
-    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
-  ];
   const calendarData = getCurrentMonthDays();
 
   if (mode === 'not-found') {

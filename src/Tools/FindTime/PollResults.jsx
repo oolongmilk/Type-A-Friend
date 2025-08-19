@@ -5,31 +5,45 @@ import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
 import './FindTime.css';
+import DuckFace from '/src/assets/duck-face.svg?react'
+import { getCurrentMonthDays } from './utils';
 
 const PollResults = () => {
   const { shareCode } = useParams();
-  const [pollData, setPollData] = useState(null);
+  const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
   const [selectedDate, setSelectedDate] = useState(null);
 
-  useEffect(() => {
-    if (shareCode) {
-      const pollRef = ref(database, 'polls/' + shareCode);
-      const unsubscribe = onValue(
-        pollRef,
-        (snapshot) => {
-          setPollData(snapshot.exists() ? snapshot.val() : null);
-        },
-        (error) => {
-          setPollData(null);
-          alert('Error loading poll: ' + error.message);
-        }
-      );
-      return () => {
-        if (typeof unsubscribe === 'function') unsubscribe();
-      };
-    }
-  }, [shareCode]);
+//   useEffect(() => {
+//     if (shareCode) {
+//       const pollRef = ref(database, 'polls/' + shareCode);
+//       const unsubscribe = onValue(
+//         pollRef,
+//         (snapshot) => {
+//           setPollData(snapshot.exists() ? snapshot.val() : null);
+//         },
+//         (error) => {
+//           setPollData(null);
+//           alert('Error loading poll: ' + error.message);
+//         }
+//       );
+//       return () => {
+//         if (typeof unsubscribe === 'function') unsubscribe();
+//       };
+//     }
+//   }, [shareCode]);
 
+  if (pollData === undefined) {
+    // Loading spinner with duck-face
+    return (
+      <main className="main-content">
+        <div className="poll-container" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320}}>
+          <DuckFace alt="Loading..." style={{width: 90, height: 90, marginBottom: 24, animation: 'spin 1.2s linear infinite'}} />
+          <div style={{fontSize: '1.2rem', color: '#1976d2', fontWeight: 600}}>Loading...</div>
+        </div>
+      </main>
+    );
+  }
+  
   if (!pollData) {
     return (
       <main className="main-content">
@@ -41,15 +55,6 @@ const PollResults = () => {
       </main>
     );
   }
-
-
-  // Build date/time availability map
-  const timeSlots = [
-    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
-    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
-    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
-  ];
 
   // Build a map: date -> { count, names, times: { time -> [names] } }
   const dateMap = {};
@@ -84,37 +89,6 @@ const PollResults = () => {
     }
   }
 
-  // Calendar grid logic (match CreatePoll)
-  const getCurrentMonthDays = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-    const days = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    for (let i = 0; i < 42; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
-      const dateString = currentDate.toISOString().split('T')[0];
-      const isCurrentMonth = currentDate.getMonth() === month;
-      const isToday = currentDate.getTime() === today.getTime();
-      const isPast = currentDate < today;
-      days.push({
-        date: dateString,
-        day: currentDate.getDate(),
-        isCurrentMonth,
-        isToday,
-        isPast
-      });
-    }
-    return {
-      days,
-      monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    };
-  };
   const calendarData = getCurrentMonthDays();
 
   return (
@@ -226,7 +200,7 @@ const PollResults = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="share-section">
               <h3>Share This Poll</h3>
               <div className="share-link">
