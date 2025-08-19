@@ -6,6 +6,7 @@ import { database } from '../../firebase';
 import { formatDateTime } from './utils';
 import { timeSlots } from './utils';
 import { getCurrentMonthDays } from './utils';
+import CalendarGrid from './CalendarGrid';
 
 // Utility functions for poll management
 const generateShareCode = () => {
@@ -141,30 +142,12 @@ function CreatePoll() {
 
             <div className="form-section">
               <label>Step 1: Select dates that work:</label>
-              <div className="calendar-container">
-                <div className="calendar-header">
-                  <h3>{calendarData.monthName}</h3>
-                </div>
-                <div className="calendar-weekdays">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="weekday-header">{day}</div>
-                  ))}
-                </div>
-                <div className="calendar-grid">
-                  {calendarData.days.map((dayData, index) => (
-                    <button
-                      key={index}
-                      className={`calendar-day ${currentSelectedDate === dayData.date ? 'selected' : ''} ${
-                        !dayData.isCurrentMonth ? 'other-month' : ''
-                      } ${dayData.isToday ? 'today' : ''} ${dayData.isPast ? 'past' : ''}`}
-                      onClick={() => !dayData.isPast && toggleDateSelection(dayData.date)}
-                      disabled={dayData.isPast}
-                    >
-                      {dayData.day}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <CalendarGrid
+                days={calendarData.days}
+                monthName={calendarData.monthName}
+                selectedDate={currentSelectedDate}
+                onDateSelect={toggleDateSelection}
+              />
             </div>
 
             <div className="form-section">

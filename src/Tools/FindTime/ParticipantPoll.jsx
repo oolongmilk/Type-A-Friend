@@ -5,6 +5,7 @@ import { formatDateTime, getAllAvailableCombos } from './utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
 import { getCurrentMonthDays, timeSlots as times } from './utils';
+import CalendarGrid from './CalendarGrid';
 import { spinner } from './spinner';
 
 // Utility functions for poll management
@@ -209,42 +210,19 @@ function ParticipantPoll() {
 
               <div className="form-section">
                 <label>Step 1: Select dates that work for you:</label>
-                <div className="calendar-container">
-                  <div className="calendar-header">
-                    <h3>{calendarData.monthName}</h3>
-                  </div>
-                  <div className="calendar-weekdays">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="weekday-header">{day}</div>
-                    ))}
-                  </div>
-                  <div className="calendar-grid">
-                    {calendarData.days.map((dayInfo, index) => (
-                      <button
-                        key={index}
-                        className={`calendar-day ${
-                          !dayInfo ? 'empty' : 
-                          !dayInfo.isCurrentMonth ? 'other-month' : 
-                          currentSelectedDate === dayInfo.date ? 'selected' :
-                          hasExistingSelections(dayInfo.date) ? 'has-existing' : ''
-                        } ${dayInfo && dayInfo.isToday ? 'today' : ''} ${dayInfo && dayInfo.isPast ? 'past' : ''}`}
-                        onClick={() => dayInfo && dayInfo.isCurrentMonth && !dayInfo.isPast && toggleDateSelection(dayInfo.date)}
-                        disabled={!dayInfo || dayInfo.isPast}
-                        style={{ position: 'relative' }}
-                      >
-                        {dayInfo && dayInfo.day}
-                        {dayInfo && hasExistingSelections(dayInfo.date) && (
-                          <span className="calendar-existing-indicator" title="Available">
-                            ✓
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="legend">
-                    <span className="calendar-existing-indicator" style={{marginRight: 6, position: 'static', display: 'inline-flex', verticalAlign: 'middle'}}>✓</span>
-                    <span>Days that work for others</span>
-                  </div>
+                <CalendarGrid
+                  days={calendarData.days}
+                  monthName={calendarData.monthName}
+                  selectedDate={currentSelectedDate}
+                  onDateSelect={toggleDateSelection}
+                  dayModifiers={dayObj => hasExistingSelections(dayObj.date) ? 'has-existing' : ''}
+                  renderDayExtras={dayObj => hasExistingSelections(dayObj.date) ? (
+                    <span className="calendar-existing-indicator" title="Available">✓</span>
+                  ) : null}
+                />
+                <div className="legend">
+                  <span className="calendar-existing-indicator" style={{marginRight: 6, position: 'static', display: 'inline-flex', verticalAlign: 'middle'}}>✓</span>
+                  <span>Days that work for others</span>
                 </div>
               </div>
 

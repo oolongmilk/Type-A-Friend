@@ -6,6 +6,7 @@ import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
 import './FindTime.css';
 import { spinner } from './spinner.jsx';
+import CalendarGrid from './CalendarGrid';
 
 const PollResults = () => {
   const { shareCode } = useParams();
@@ -115,45 +116,31 @@ const PollResults = () => {
               <div className="suggestion-section"><h3>Wow, no overlaps. Back to the drawing board?</h3></div>
             )}
             {/* Calendar grid */}
-            <div className="calendar-container">
-              <div className="calendar-header">
-                <h3>{calendarData.monthName}</h3>
-              </div>
-              <div className="calendar-weekdays">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="weekday-header">{day}</div>
-                ))}
-              </div>
-              <div className="calendar-grid">
-                {calendarData.days.map((dayData, index) => {
-                  const hasPeople = dateMap[dayData.date] && dateMap[dayData.date].names.size > 0;
-                  const isBest = bestCombos.some(combo => combo.startsWith(dayData.date));
-                  return (
-                    <button
-                      key={index}
-                      className={`calendar-day${dayData.isCurrentMonth ? '' : ' other-month'}${dayData.isToday ? ' today' : ''}${dayData.isPast ? ' past' : ''}${hasPeople ? ' has-existing' : ''}${isBest ? ' selected' : ''}`}
-                      disabled={dayData.isPast}
-                      onClick={() => hasPeople && setSelectedDate(dayData.date)}
-                      style={isBest ? {border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9'} : {}}
-                    >
-                      {dayData.day}
-                      {hasPeople && (
-                        <span className="calendar-existing-indicator" title="Available">
-                          ✓
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              {/* Legend under calendar */}
-              <div className="legend" style={{marginTop: '1rem'}}>
-                <strong style={{color: '#222'}}>Legend:</strong>
-                <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1.5em', flexWrap: 'wrap', color: '#222'}}>
-                  <li><span style={{color: '#388e3c', fontWeight: 700}}>✓</span> = Someone is available</li>
-                  <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
-                </ul>
-              </div>
+            <CalendarGrid
+              days={calendarData.days}
+              monthName={calendarData.monthName}
+              selectedDate={selectedDate}
+              onDateSelect={date => dateMap[date] && setSelectedDate(date)}
+              dayModifiers={dayObj => {
+                const hasPeople = dateMap[dayObj.date] && dateMap[dayObj.date].names.size > 0;
+                const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
+                return [hasPeople ? 'has-existing' : '', isBest ? 'selected' : ''].filter(Boolean).join(' ');
+              }}
+              renderDayExtras={dayObj => {
+                const hasPeople = dateMap[dayObj.date] && dateMap[dayObj.date].names.size > 0;
+                return hasPeople ? (
+                  <span className="calendar-existing-indicator" title="Available">✓</span>
+                ) : null;
+              }}
+              disablePast={true}
+            />
+            {/* Legend under calendar */}
+            <div className="legend" style={{marginTop: '1rem'}}>
+              <strong style={{color: '#222'}}>Legend:</strong>
+              <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1.5em', flexWrap: 'wrap', color: '#222'}}>
+                <li><span style={{color: '#388e3c', fontWeight: 700}}>✓</span> = Someone is available</li>
+                <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
+              </ul>
             </div>
           </div>
           {/* Right column: participants and share */}
