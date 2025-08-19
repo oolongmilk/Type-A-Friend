@@ -194,7 +194,7 @@ function ParticipantPoll() {
     return (
       <main className="main-content">
         <div className="poll-container">
-          <h2>🗓️ {pollData.eventName}</h2>
+          <h2>{pollData.eventName}</h2>
           <p>Add your availability to this event. Days highlighted in blue already have times selected by others.</p>
           
           <div className="two-column-layout">
