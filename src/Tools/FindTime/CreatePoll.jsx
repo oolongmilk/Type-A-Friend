@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import leaf from '../../assets/leaf.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
 import { ref, set } from 'firebase/database';
@@ -116,7 +117,10 @@ function CreatePoll() {
   return (
     <main className="main-content">
       <div className="poll-container">
-        <h2>Create New Poll</h2>
+        <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
+          Create New Poll
+        </h2>
         
         <div className="two-column-layout">
           {/* Left Column - Event Setup and Selection */}
