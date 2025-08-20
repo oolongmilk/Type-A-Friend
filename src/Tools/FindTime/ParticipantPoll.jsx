@@ -292,9 +292,15 @@ function ParticipantPoll() {
                 />
               </div>
               <div className="form-actions">
-                <button 
-                  onClick={submitResponse} 
-                  disabled={!participantName.trim() || selectedDateTimeCombos.size === 0}
+                <button
+                  onClick={e => {
+                    if (!participantName.trim() || selectedDateTimeCombos.size === 0) {
+                      e.preventDefault();
+                      alert('Please fill in your name and select at least one time slot before submitting!');
+                      return;
+                    }
+                    submitResponse();
+                  }}
                   className="button primary"
                 >
                   Submit My Availability

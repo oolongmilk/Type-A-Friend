@@ -211,10 +211,16 @@ function CreatePoll() {
             </div>
 
             <div className="form-actions">
-              <button 
-                onClick={createPoll} 
+              <button
+                onClick={e => {
+                  if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
+                    e.preventDefault();
+                    alert('Please enter an event name, your name, and at least one date/time combination before submitting!');
+                    return;
+                  }
+                  createPoll();
+                }}
                 className="button submit-poll"
-                disabled={selectedDateTimeCombos.size === 0}
               >
                 Send Poll to Your Friends
               </button>
