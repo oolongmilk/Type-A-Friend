@@ -140,7 +140,7 @@
 .selection-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #1976d2;
+  color: #8AC887;
   min-height: 1.2rem;
 }
 
@@ -155,9 +155,9 @@
   font-size: 1.1rem;
   border-radius: 0.6rem;
   background: white;
-  color: #1976d2;
-  border: 2px solid #1976d2;
-  box-shadow: 0 0 0 1.5px #1976d2;
+  color: #8AC887;
+  border: 2px solid #8AC887;
+  box-shadow: 0 0 0 1.5px #8AC887;
   transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -254,7 +254,7 @@
 }
 
 .remove-button {
-  background: #ff5722;
+  background: #E2725B;
   color: white;
   border: none;
   border-radius: 50%;
@@ -271,7 +271,7 @@
 }
 
 .remove-button:hover {
-  background: #d84315;
+  background: #b85a47;
 }
 
 .availability-grid {
