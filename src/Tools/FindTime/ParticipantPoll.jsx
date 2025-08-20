@@ -9,7 +9,7 @@ import TimeGrid from './Components/TimeGrid';
 import SelectedTimesList from './Components/SelectedTimesList';
 import CalendarGrid from './Components/CalendarGrid';
 import { spinner } from './Components/Spinner';
-
+import leaf from '../../assets/leaf.svg';
 // Utility functions for poll management
 const loadPollFromFirebase = (shareCode, callback) => {
   const pollRef = ref(database, 'polls/' + shareCode);
@@ -203,8 +203,11 @@ function ParticipantPoll() {
     return (
       <main className="main-content">
         <div className="poll-container">
-          <h2>{pollData.eventName}</h2>
-          <p>Add your availability to this event. Days highlighted in blue already have times selected by others.</p>
+          <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
+            {pollData.eventName}
+          </h2>
+          <p>Add your availability to this event</p>
           
           <div className="two-column-layout">
             <div className="left-column">

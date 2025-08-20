@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
-
 import './FindTime.css';
 import './PollResults.css';
 import { spinner } from './Components/Spinner.jsx';
 import CalendarGrid from './Components/CalendarGrid.jsx';
 import ParticipantsSection from './Components/ParticipantsSection.jsx';
 import thumbs from '../../assets/thumbs.svg';
+import leaf from '../../assets/leaf.svg';
 
 
 const PollResults = () => {
@@ -92,7 +92,11 @@ const PollResults = () => {
   return (
     <main className="main-content">
       <div className="poll-container">
-        <h2>Poll Results for "{pollData.eventName}"</h2>
+        <h2
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
+          Poll Results for "{pollData.eventName}"
+        </h2>
         <div className="two-column-layout">
           <div className="left-column">
             {/* Best day(s) banner */}
