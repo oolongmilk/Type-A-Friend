@@ -158,6 +158,10 @@ function CreatePoll() {
               />
             </div>
 
+          </div>
+
+          {/* Right Column - Selected Times List */}
+          <div className="right-column">
             <div className="form-section">
               <label>Step 2: Select Times (multiple allowed):</label>
               <div className="time-selection">
@@ -196,10 +200,7 @@ function CreatePoll() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Right Column - Selected Times List */}
-          <div className="right-column">
+            
             <div className="form-section">
               <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
               <SelectedTimesList
