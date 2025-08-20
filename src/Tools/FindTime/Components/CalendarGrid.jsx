@@ -1,4 +1,5 @@
 import React from 'react';
+import leaf from '../../../assets/leaf.svg'; 
 import './calendar.css';
 
 /**
@@ -51,7 +52,25 @@ export default function CalendarGrid({
               onClick={() => !isDisabled && onDateSelect && onDateSelect(dayObj.date)}
               style={{ position: 'relative' }}
             >
-              {dayObj.day}
+              {/* Leaf SVG is added here when the day is selected */}
+              {isSelected && (
+                <img
+                  src={leaf}
+                  alt="Selected"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: '65%',
+                    height: '65%',
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                    zIndex: 2,
+                    opacity: 0.92
+                  }}
+                />
+              )}
+              <span style={{ position: 'relative', zIndex: 3 }}>{dayObj.day}</span>
               {renderDayExtras(dayObj)}
             </button>
           );

@@ -1,4 +1,5 @@
 import React from 'react';
+import leaf from '../../../assets/leaf.svg';
 import '../FindTime.css';
 import './TimeGrid.css';
 
@@ -31,8 +32,26 @@ export default function TimeGrid({ selectedTimes, onTimeToggle, existingTimes = 
             className={`time-button${isSelected ? ' selected' : ''}${isExisting ? ' existing' : ''}`}
             onClick={() => onTimeToggle(time)}
             type="button"
+            style={{ position: 'relative' }}
           >
-            {time}
+            {isSelected && (
+              <img
+                src={leaf}
+                alt="Selected"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  width: '65%',
+                  height: '65%',
+                  transform: 'translate(-50%, -50%)',
+                  pointerEvents: 'none',
+                  zIndex: 2,
+                  opacity: 0.92
+                }}
+              />
+            )}
+            <span style={{ position: 'relative', zIndex: 3 }}>{time}</span>
             {isExisting && <span className="time-existing-indicator" title="Already picked">✓</span>}
           </button>
         );
