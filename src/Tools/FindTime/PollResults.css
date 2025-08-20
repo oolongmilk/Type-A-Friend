@@ -1,3 +1,19 @@
+.pollresults-besttime-title img {
+  height: 3em;
+  width: 3em;
+  vertical-align: middle;
+}
+/* Suggestion section padding */
+.suggestion-section {
+  padding: 1rem 1.2rem;
+}
+/* Best time h3 in PollResults */
+.pollresults-besttime-title {
+  color: #388e3c;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 /* Duck icons in calendar day cell: flex, wrap, fill cell, center */
  .calendar-existing-indicator {
   position: absolute;

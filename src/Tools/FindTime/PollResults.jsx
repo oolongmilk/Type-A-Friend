@@ -10,6 +10,7 @@ import './PollResults.css';
 import { spinner } from './Components/Spinner.jsx';
 import CalendarGrid from './Components/CalendarGrid.jsx';
 import ParticipantsSection from './Components/ParticipantsSection.jsx';
+import thumbs from '../../assets/thumbs.svg';
 
 
 const PollResults = () => {
@@ -93,13 +94,14 @@ const PollResults = () => {
       <div className="poll-container">
         <h2>Poll Results for "{pollData.eventName}"</h2>
         <div className="two-column-layout">
-          {/* Left column: best time and calendar */}
           <div className="left-column">
             {/* Best day(s) banner */}
             {bestCombos.length > 0 ? (
               <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 style={{color: '#388e3c', display: 'flex', alignItems: 'center', gap: 8}}>
-                  <span style={{fontSize: '1.5em'}}>✅</span> Best Time{bestCombos.length > 1 ? 's' : ''}
+                <h3 className="pollresults-besttime-title">
+                  <img src={thumbs} alt="Best" />
+                  Best Time{bestCombos.length > 1 ? 's' : ''}
+                  
                 </h3>
                 <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
                   {bestCombos.map(combo => {
@@ -128,7 +130,7 @@ const PollResults = () => {
               dayModifiers={dayObj => {
                 const hasPeople = dateMap[dayObj.date] && dateMap[dayObj.date].names.size > 0;
                 const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
-                return [hasPeople ? 'has-existing' : '', isBest ? 'selected' : ''].filter(Boolean).join(' ');
+                return [ isBest ? 'selected' : ''].filter(Boolean).join(' ');
               }}
               renderDayExtras={dayObj => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
@@ -198,7 +200,7 @@ const PollResults = () => {
             <ParticipantsSection participants={pollData.participants} />
 
             <div className="share-section">
-              <h3>Share This Poll</h3>
+              <h3>Share Results</h3>
               <div className="share-link">
                 <code>{window.location.href}</code>
               </div>

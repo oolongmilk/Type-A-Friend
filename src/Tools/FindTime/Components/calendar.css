@@ -62,24 +62,12 @@
   transform: scale(1.05);
 }
 
-.calendar-day.selected {
-  background: #1976d2;
-  border-color: #1976d2;
-  color: white;
-  font-weight: 600;
-}
-
 .calendar-day.today {
   background: #fff3e0;
   border-color: #ff9800;
   font-weight: 700;
 }
 
-.calendar-day.today.selected {
-  background: #1976d2;
-  border-color: #1976d2;
-  color: white;
-}
 
 .calendar-day.other-month {
   color: #ccc;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import leaf from '../../assets/leaf.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
 import { ref, set } from 'firebase/database';
@@ -116,7 +117,10 @@ function CreatePoll() {
   return (
     <main className="main-content">
       <div className="poll-container">
-        <h2>Create Time Poll</h2>
+        <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
+          Create New Poll
+        </h2>
         
         <div className="two-column-layout">
           {/* Left Column - Event Setup and Selection */}
@@ -154,6 +158,10 @@ function CreatePoll() {
               />
             </div>
 
+          </div>
+
+          {/* Right Column - Selected Times List */}
+          <div className="right-column">
             <div className="form-section">
               <label>Step 2: Select Times (multiple allowed):</label>
               <div className="time-selection">
@@ -192,10 +200,7 @@ function CreatePoll() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Right Column - Selected Times List */}
-          <div className="right-column">
+            
             <div className="form-section">
               <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
               <SelectedTimesList
@@ -206,10 +211,16 @@ function CreatePoll() {
             </div>
 
             <div className="form-actions">
-              <button 
-                onClick={createPoll} 
+              <button
+                onClick={e => {
+                  if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
+                    e.preventDefault();
+                    alert('Please enter an event name, your name, and at least one date/time combination before submitting!');
+                    return;
+                  }
+                  createPoll();
+                }}
                 className="button submit-poll"
-                disabled={selectedDateTimeCombos.size === 0}
               >
                 Send Poll to Your Friends
               </button>
