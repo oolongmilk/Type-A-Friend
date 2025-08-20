@@ -32,11 +32,11 @@ export default function ShareLinkModal({ shareCode, onClose, onViewPoll }) {
         <div className="share-code-info">
           <p>Your share code: <strong>{shareCode}</strong></p>
           <p>Copy this code so you can revisit your poll at a later time from the Home page!</p>
-          <p>Note: Polls are deleted after 30 days</p>
+          <p style={{ fontStyle: 'italic' }}>Note: Polls are deleted after 30 days</p>
         </div>
         <div className="modal-actions">
           {onViewPoll && (
-            <button onClick={onViewPoll} className="button primary">View Poll</button>
+            <button onClick={onViewPoll} className="button primary">View Poll Results</button>
           )}
           <button onClick={onClose} className="button">Close</button>
         </div>
