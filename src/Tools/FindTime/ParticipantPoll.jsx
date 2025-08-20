@@ -231,11 +231,14 @@ function ParticipantPoll() {
                     <span className="calendar-existing-indicator" title="Available">✓</span>
                   ) : null}
                 />
-                <div className="legend">
-                  <span className="calendar-existing-indicator" style={{marginRight: 6, position: 'static', display: 'inline-flex', verticalAlign: 'middle'}}>✓</span>
-                  <span>Days that work for others</span>
-                </div>
+                 <div className="legend">
+                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
+                    <span>Times that work for others</span>
+                  </div>
               </div>
+            </div>
+
+            <div className="right-column">
 
               <div className="form-section">
                 <label>Step 2: Select Times (multiple allowed):</label>
@@ -264,8 +267,8 @@ function ParticipantPoll() {
                   />
 
                   <div className="legend">
-                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6}}>✓</span>
-                    <span style={{color: '#388e3c'}}>Times that work for other people</span>
+                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
+                    <span>Times that work for others</span>
                   </div>
 
                   <div className="add-section">
@@ -279,8 +282,7 @@ function ParticipantPoll() {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="right-column">
+
               <div className="form-section">
                 <label>Your Selected Times ({selectedDateTimeCombos.size}):</label>
                 <SelectedTimesList

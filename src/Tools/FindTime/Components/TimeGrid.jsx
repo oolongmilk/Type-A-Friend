@@ -51,8 +51,8 @@ export default function TimeGrid({ selectedTimes, onTimeToggle, existingTimes = 
                 }}
               />
             )}
-            <span style={{ position: 'relative', zIndex: 3 }}>{time}</span>
-            {isExisting && <span className="time-existing-indicator" title="Already picked">✓</span>}
+            <span style={{ position: 'relative', zIndex: 3 }}>{time}</span> {/* This renders the time inside the button */}
+            {isExisting && <span title="Already picked">✓</span>}  {/* This renders the check mark next to the time*/}
           </button>
         );
       })}
