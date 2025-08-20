@@ -301,7 +301,7 @@ function ParticipantPoll() {
                     }
                     submitResponse();
                   }}
-                  className="button primary"
+                  className="button"
                 >
                   Submit My Availability
                 </button>
