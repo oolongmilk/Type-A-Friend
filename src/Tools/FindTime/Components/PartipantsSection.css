@@ -95,3 +95,7 @@
 	flex-direction: column;
 	height: 100%;
 }
+
+.participant-name {
+    margin-left: 1em;
+}

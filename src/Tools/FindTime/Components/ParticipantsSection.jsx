@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { duckMap } from '../Utils/utils.js';
 import arrow from '../../../assets/arrow.svg';
 
@@ -52,25 +52,43 @@ export default function ParticipantsSection({ participants, selectedDate }) {
         <div className="participants-can-make-it">
           <div className="participants-section-header can-make-it-header" aria-label={`Can make it: ${canMakeIt.length}`}>Can make it ({canMakeIt.length}):</div>
           {canMakeIt.length === 0 && <div style={{color:'#888'}}>No one is available for this day.</div>}
-          {canMakeIt.map((p, index) => {
-            const DuckIcon = duckMap[p.color];
-            return (
-              <div key={index} className="participant-item participant-item-grid">
-                <div className="participant-row participant-row-top">
-                  <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
-                     <span className="participant-name can-make-it-name" style={{ marginLeft: 10, display: 'flex', alignItems: 'center' }}>
-                       {p.name}
-                       <img src={arrow} alt="dropdown arrow" style={{ width: 18, height: 18, marginLeft: 8 }} />
-                     </span>
-                </div>
-                <div className="participant-row participant-row-bottom">
-                  <span className="available-times">Available times: {sortTimes(p.times).map((time, i) => (
-                    <span key={i} className="available-time-pill">{time}</span>
-                  ))}</span>
-                </div>
-              </div>
-            );
-          })}
+              {canMakeIt.map((p, index) => {
+                const DuckIcon = duckMap[p.color];
+                const [openIndexes, setOpenIndexes] = useState([]);
+                const isOpen = openIndexes.includes(index);
+                const toggleDropdown = idx => {
+                  setOpenIndexes(open => open.includes(idx)
+                    ? open.filter(i => i !== idx)
+                    : [...open, idx]
+                  );
+                };
+                return (
+                  <div key={index} className="participant-item participant-item-grid">
+                    <div className="participant-row participant-row-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
+                        <span className="participant-name">{p.name}</span>
+                      </span>
+                      <button
+                        className="dropdown-arrow"
+                        aria-label={isOpen ? 'Hide available times' : 'Show available times'}
+                        onClick={() => toggleDropdown(index)}
+                        tabIndex={0}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 8, padding: 0, display: 'flex', alignItems: 'center' }}
+                      >
+                        <img src={arrow} alt="dropdown arrow" style={{ width: 18, height: 18, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                      </button>
+                    </div>
+                    {isOpen && (
+                      <div className="participant-row participant-row-bottom">
+                        <span className="available-times">Available times: {sortTimes(p.times).map((time, i) => (
+                          <span key={i} className="available-time-pill">{time}</span>
+                        ))}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
         </div>
         <div className="participants-cannot-make-it">
           <div className="participants-section-header cannot-make-it-header" aria-label={`Cannot make it: ${cannotMakeIt.length}`}>Cannot make it ({cannotMakeIt.length}):</div>
