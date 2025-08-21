@@ -95,7 +95,7 @@ const PollResults = () => {
         <h2
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
-          Poll Results for "{pollData.eventName}"
+          {pollData.eventName}
         </h2>
         <div className="two-column-layout">
           <div className="left-column">
