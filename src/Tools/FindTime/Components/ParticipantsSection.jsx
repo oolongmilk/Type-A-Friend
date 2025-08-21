@@ -1,5 +1,6 @@
 import React from 'react';
 import { duckMap } from '../Utils/utils.js';
+import arrow from '../../../assets/arrow.svg';
 
 // Helper: sort times chronologically (assumes 24-hour or 12-hour format with AM/PM)
 function sortTimes(times) {
@@ -54,10 +55,15 @@ export default function ParticipantsSection({ participants, selectedDate }) {
           {canMakeIt.map((p, index) => {
             const DuckIcon = duckMap[p.color];
             return (
-              <div key={index} className="participant-item">
-                <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span className="participant-name can-make-it-name">{p.name}</span>
+              <div key={index} className="participant-item participant-item-grid">
+                <div className="participant-row participant-row-top">
+                  <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
+                     <span className="participant-name can-make-it-name" style={{ marginLeft: 10, display: 'flex', alignItems: 'center' }}>
+                       {p.name}
+                       <img src={arrow} alt="dropdown arrow" style={{ width: 18, height: 18, marginLeft: 8 }} />
+                     </span>
+                </div>
+                <div className="participant-row participant-row-bottom">
                   <span className="available-times">Available times: {sortTimes(p.times).map((time, i) => (
                     <span key={i} className="available-time-pill">{time}</span>
                   ))}</span>
@@ -72,10 +78,10 @@ export default function ParticipantsSection({ participants, selectedDate }) {
           {cannotMakeIt.map((p, index) => {
             const DuckIcon = duckMap[p.color];
             return (
-              <div key={index} className="participant-item">
-                <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span className="participant-name cannot-make-it-name">{p.name}</span>
+              <div key={index} className="participant-item participant-item-grid">
+                <div className="participant-row participant-row-top">
+                  <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
+                  <span className="participant-name">{p.name}</span>
                 </div>
               </div>
             );

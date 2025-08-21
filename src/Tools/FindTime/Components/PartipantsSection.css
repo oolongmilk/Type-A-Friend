@@ -44,21 +44,26 @@
 .cannot-make-it-header {
 	color: #9c2020;
 }
-.participant-name {
-	font-weight: 700;
-	font-size: 1.08em;
+.participant-item.participant-item-grid {
+	display: grid;
+	grid-template-rows: auto auto;
+	margin-bottom: 4px;
+	position: relative;
 }
-.can-make-it-name {
-	color: #222;
+.participant-row {
+	width: 100%;
 }
-.cannot-make-it-name {
-	color: #888;
+.participant-row-top {
+	display: flex;
+	align-items: center;
 }
-.available-times {
-	font-size: 0.97em;
-	color: #2e7d32;
-	margin-top: 1px;
+.participant-row-bottom {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 4px;
 }
+
 .participant-item {
 	display: flex;
 	align-items: center;
