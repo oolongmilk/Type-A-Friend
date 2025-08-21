@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { duckMap } from '../Utils/utils.js';
 import arrow from '../../../assets/arrow.svg';
 import './PartipantsSection.css';
@@ -39,7 +39,10 @@ export default function ParticipantsSection({ participants, selectedDate }) {
   const canMakeIt = [];
   const cannotMakeIt = [];
   const [openIndexes, setOpenIndexes] = useState([]);
-  
+  useEffect(() => {
+    setOpenIndexes([]);
+  }, [selectedDate]);
+
   participants.forEach(p => {
     const times = getAvailableTimesForDate(p, selectedDate);
     if (times.length > 0) {
