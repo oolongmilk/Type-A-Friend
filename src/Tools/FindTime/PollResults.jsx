@@ -174,7 +174,7 @@ const PollResults = () => {
                   </span>
                   = Someone is available
                 </li>
-                <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
+                <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
               </ul>
             </div>
           </div>
@@ -185,7 +185,7 @@ const PollResults = () => {
               participants={pollData.participants}
               selectedDate={selectedDate}
             />
-            
+
             <div className="form-actions" style={{marginTop: '2rem'}}>
               <Link to="/find-time" className="button primary">Create New Poll</Link>
             </div>
