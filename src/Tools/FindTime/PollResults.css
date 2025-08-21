@@ -1,4 +1,12 @@
-.pollresults-besttime-title img {
+/* Override selected day style for PollResults calendar */
+.calendar-day.selected {
+  background: None;
+  border: 2px solid #388e3c !important;
+  color: #1976d2 !important;
+  box-shadow: 0 0 0 2px #b2dfdb;
+  font-weight: 700;
+}
+.suggestion-title img {
   height: 3em;
   width: 3em;
   vertical-align: middle;
@@ -8,7 +16,7 @@
   padding: 1rem 1.2rem;
 }
 /* Best time h3 in PollResults */
-.pollresults-besttime-title {
+.suggestion-title {
   color: #388e3c;
   display: flex;
   align-items: center;
@@ -47,4 +55,25 @@
   margin-top: 0;
   font-size: 1.1rem;
   color: #1976d2;
+}
+
+@media (max-width: 600px) {
+  .duck-indicator {
+    max-width: 24px;
+  }
+}
+
+/* Duck icon for days that work */
+.duck-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  z-index: 2;
 }

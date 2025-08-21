@@ -17,6 +17,7 @@ const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
   const [selectedDate, setSelectedDate] = useState(null);
+  const calendarData = getCurrentMonthDays();
 
   useEffect(() => {
     if (shareCode) {
@@ -55,6 +56,7 @@ const PollResults = () => {
   }
 
   // Build a map: date -> { count, names, times: { time -> [names] } }
+  // Used for rendering the calendar and participant details
   const dateMap = {};
   if (pollData && pollData.participants) {
     pollData.participants.forEach(p => {
@@ -73,21 +75,26 @@ const PollResults = () => {
   let bestCombos = [];
   let maxCount = 0;
   if (pollData && pollData.participants) {
-    const comboCounts = {};
+    const comboCounts = new Map();
     pollData.participants.forEach(p => {
-      (p.dateTimeCombos || []).forEach(combo => {
-        comboCounts[combo] = (comboCounts[combo] || 0) + 1;
+      (Array.isArray(p.dateTimeCombos) ? p.dateTimeCombos : []).forEach(combo => {
+        const count = (comboCounts.get(combo) || 0) + 1;
+        comboCounts.set(combo, count);
+        if (count > maxCount) {
+          maxCount = count;
+          bestCombos = [combo];
+        } else if (count === maxCount) {
+          bestCombos.push(combo);
+        }
       });
     });
-    maxCount = Math.max(0, ...Object.values(comboCounts));
-    if (maxCount > 1) {
-      bestCombos = Object.entries(comboCounts)
-        .filter(([combo, count]) => count === maxCount)
-        .map(([combo]) => combo);
-    }
+    // Remove duplicates in bestCombos (if any)
+    bestCombos = [...new Set(bestCombos)];
+    // Only consider bestCombos if more than one person is available
+    if (maxCount <= 1) bestCombos = [];
   }
 
-  const calendarData = getCurrentMonthDays();
+  
 
   return (
     <main className="main-content">
@@ -95,14 +102,14 @@ const PollResults = () => {
         <h2
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
-          Poll Results for "{pollData.eventName}"
+          {pollData.eventName}
         </h2>
         <div className="two-column-layout">
           <div className="left-column">
             {/* Best day(s) banner */}
             {bestCombos.length > 0 ? (
               <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 className="pollresults-besttime-title">
+                <h3 className="suggestion-title">
                   <img src={thumbs} alt="Best" />
                   Best Time{bestCombos.length > 1 ? 's' : ''}
                   
@@ -123,40 +130,35 @@ const PollResults = () => {
                 </ul>
               </div>
             ) : (
-              <div className="suggestion-section"><h3>Wow, no overlaps. Back to the drawing board?</h3></div>
+              <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
             )}
             {/* Calendar grid */}
             <CalendarGrid
               days={calendarData.days}
               monthName={calendarData.monthName}
               selectedDate={selectedDate}
-              onDateSelect={date => dateMap[date] && setSelectedDate(date)}
+              onDateSelect={setSelectedDate}
               dayModifiers={dayObj => {
-                const hasPeople = dateMap[dayObj.date] && dateMap[dayObj.date].names.size > 0;
                 const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
-                return [ isBest ? 'selected' : ''].filter(Boolean).join(' ');
+                return [ isBest ? 'best-time' : ''].filter(Boolean).join(' ');
               }}
               renderDayExtras={dayObj => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
                 if (participantsForDay && participantsForDay.length > 0) {
+                  // Show a single duck icon with a number badge for count
+                  const count = participantsForDay.length;
+                  // Use the first participant's duck color, or yellow as fallback
+                  const DuckIcon = duckMap['yellow'];
                   return (
-                    <span className="calendar-existing-indicator">
-                      {participantsForDay.map((p, i) => {
-                        const DuckIcon = duckMap[p.color];
-                        return (
-                          <DuckIcon
-                            key={p.name + i}
-                            style={{ width: 18, height: 18, marginRight: 1, marginBottom: 1, flex: '0 0 18px' }}
-                            title={p.name}
-                          />
-                        );
-                      })}
+                    <span className="duck-indicator">
+                      <DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/>
                     </span>
                   );
                 }
                 return null;
               }}
               disablePast={true}
+              showSelectedLeaf={false}
             />
             {/* Legend under calendar */}
             <div className="legend" style={{marginTop: '1rem'}}>
@@ -172,49 +174,18 @@ const PollResults = () => {
                   </span>
                   = Someone is available
                 </li>
-                <li><span style={{border: '2px solid #388e3c', boxShadow: '0 0 0 2px #c8e6c9', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
+                <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', boxShadow: '0 0 0 2px #00bcd433', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
               </ul>
             </div>
           </div>
           {/* Right column: participants and share */}
           <div className="right-column">
-            
-            {/* New details section */}
-            <div className="calendar-details-box">
-              <h3 className="calendar-details-title">Click on a date for more details</h3>
-              {selectedDate && dateMap[selectedDate] ? (
-                <div>
-                  <div style={{fontWeight: 600, marginBottom: 4}}>
-                    {selectedDate}
-                  </div>
-                  <div style={{marginTop: 6, fontSize: '0.95em'}}>
-                    <strong>Times & Participants:</strong>
-                    <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
-                      {Object.entries(dateMap[selectedDate].times).map(([time, names]) => (
-                        <li key={time}>{time} <span style={{color: '#388e3c'}}>({[...names].join(', ')})</span></li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ) : (
-                <div style={{color: '#888', fontSize: '0.98em'}}>No date selected.</div>
-              )}
-            </div>
 
-            <ParticipantsSection participants={pollData.participants} />
+            <ParticipantsSection 
+              participants={pollData.participants}
+              selectedDate={selectedDate}
+            />
 
-            <div className="share-section">
-              <h3>Share Results</h3>
-              <div className="share-link">
-                <code>{window.location.href}</code>
-              </div>
-               <button 
-                  onClick={() => navigator.clipboard.writeText(window.location.href)}
-                  className="button small"
-                >
-                  Copy Link
-                </button>
-            </div>
             <div className="form-actions" style={{marginTop: '2rem'}}>
               <Link to="/find-time" className="button primary">Create New Poll</Link>
             </div>

@@ -9,7 +9,7 @@ import '../FindTime.css';
  * - formatCombo: function(combo) => string (optional, default: identity)
  * - emptyText: string to show when no combos (optional)
  */
-export default function SelectedTimesList({ combos, onRemove, formatCombo = v => v, emptyText = 'No times selected yet. Use the controls on the left to add date/time combinations.' }) {
+export default function SelectedTimesList({ combos, onRemove, formatCombo = v => v, emptyText = 'No times selected yet. Use the controls to add date/time combinations.' }) {
   const comboArr = Array.isArray(combos) ? combos : Array.from(combos || []);
   return (
     <div className="selected-combos">

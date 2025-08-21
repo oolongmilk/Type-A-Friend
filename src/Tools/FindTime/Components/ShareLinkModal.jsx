@@ -1,4 +1,5 @@
 import React from 'react';
+import './ShareLinkModal.css'
 import '../FindTime.css';
 
 /**
@@ -10,18 +11,18 @@ import '../FindTime.css';
  */
 export default function ShareLinkModal({ shareCode, onClose, onViewPoll }) {
   const pollUrl = `${window.location.origin}/find-time/${shareCode}`;
+  const copyText = `🌱 Hey I'm planning an event!\n🗓️ Add your availability: ${pollUrl}\n⭐ See the results: ${pollUrl}/results`;
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h3>Poll Created!</h3>
-        <p>Share this link with your friends so they can add their availability:</p>
         <div className="share-link-container">
-          <div className="share-link">
-            <code>{pollUrl}</code>
+          <div className="share-code-info copy-area">
+            <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-word'}}>{copyText}</pre>
           </div>
           <button
             onClick={() => {
-              navigator.clipboard.writeText(pollUrl);
+              navigator.clipboard.writeText(copyText);
               alert('Link copied to clipboard!');
             }}
             className="button primary copy-button"
@@ -30,9 +31,9 @@ export default function ShareLinkModal({ shareCode, onClose, onViewPoll }) {
           </button>
         </div>
         <div className="share-code-info">
-          <p>Your share code: <strong>{shareCode}</strong></p>
-          <p>Copy this code so you can revisit your poll at a later time from the Home page!</p>
-          <p style={{ fontStyle: 'italic' }}>Note: Polls are deleted after 30 days</p>
+            <p><strong>Copy and share this message with your friends!</strong></p>
+            <p>Use the first link to add availability, and the second link to check out the results.</p>
+            <p className="deletion-note" style={{ fontStyle: 'italic' }}>Note: Polls are deleted after 30 days</p>
         </div>
         <div className="modal-actions">
           {onViewPoll && (
