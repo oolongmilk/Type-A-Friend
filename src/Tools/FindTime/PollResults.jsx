@@ -17,6 +17,7 @@ const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
   const [selectedDate, setSelectedDate] = useState(null);
+  const calendarData = getCurrentMonthDays();
 
   useEffect(() => {
     if (shareCode) {
@@ -55,6 +56,7 @@ const PollResults = () => {
   }
 
   // Build a map: date -> { count, names, times: { time -> [names] } }
+  // Used for rednering the cal and partipant details
   const dateMap = {};
   if (pollData && pollData.participants) {
     pollData.participants.forEach(p => {
@@ -73,21 +75,26 @@ const PollResults = () => {
   let bestCombos = [];
   let maxCount = 0;
   if (pollData && pollData.participants) {
-    const comboCounts = {};
+    const comboCounts = new Map();
     pollData.participants.forEach(p => {
-      (p.dateTimeCombos || []).forEach(combo => {
-        comboCounts[combo] = (comboCounts[combo] || 0) + 1;
+      (Array.isArray(p.dateTimeCombos) ? p.dateTimeCombos : []).forEach(combo => {
+        const count = (comboCounts.get(combo) || 0) + 1;
+        comboCounts.set(combo, count);
+        if (count > maxCount) {
+          maxCount = count;
+          bestCombos = [combo];
+        } else if (count === maxCount) {
+          bestCombos.push(combo);
+        }
       });
     });
-    maxCount = Math.max(0, ...Object.values(comboCounts));
-    if (maxCount > 1) {
-      bestCombos = Object.entries(comboCounts)
-        .filter(([combo, count]) => count === maxCount)
-        .map(([combo]) => combo);
-    }
+    // Remove duplicates in bestCombos (if any)
+    bestCombos = [...new Set(bestCombos)];
+    // Only consider bestCombos if more than one person is available
+    if (maxCount <= 1) bestCombos = [];
   }
 
-  const calendarData = getCurrentMonthDays();
+  
 
   return (
     <main className="main-content">
@@ -102,7 +109,7 @@ const PollResults = () => {
             {/* Best day(s) banner */}
             {bestCombos.length > 0 ? (
               <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 className="pollresults-besttime-title">
+                <h3 className="besttime-title">
                   <img src={thumbs} alt="Best" />
                   Best Time{bestCombos.length > 1 ? 's' : ''}
                   
@@ -123,7 +130,7 @@ const PollResults = () => {
                 </ul>
               </div>
             ) : (
-              <div className="suggestion-section"><h3>Wow, no overlaps. Back to the drawing board?</h3></div>
+              <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
             )}
             {/* Calendar grid */}
             <CalendarGrid
@@ -132,9 +139,8 @@ const PollResults = () => {
               selectedDate={selectedDate}
               onDateSelect={date => dateMap[date] && setSelectedDate(date)}
               dayModifiers={dayObj => {
-                const hasPeople = dateMap[dayObj.date] && dateMap[dayObj.date].names.size > 0;
                 const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
-                return [ isBest ? 'selected' : ''].filter(Boolean).join(' ');
+                return [ isBest ? 'best-time' : ''].filter(Boolean).join(' ');
               }}
               renderDayExtras={dayObj => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
