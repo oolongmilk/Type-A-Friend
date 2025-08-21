@@ -180,30 +180,11 @@ const PollResults = () => {
           </div>
           {/* Right column: participants and share */}
           <div className="right-column">
-            
-            {/* New details section */}
-            <div className="calendar-details-box">
-              <h3 className="calendar-details-title">Click on a date for more details</h3>
-              {selectedDate && dateMap[selectedDate] ? (
-                <div>
-                  <div style={{fontWeight: 600, marginBottom: 4}}>
-                    {selectedDate}
-                  </div>
-                  <div style={{marginTop: 6, fontSize: '0.95em'}}>
-                    <strong>Times & Participants:</strong>
-                    <ul style={{margin: 0, padding: 0, listStyle: 'none'}}>
-                      {Object.entries(dateMap[selectedDate].times).map(([time, names]) => (
-                        <li key={time}>{time} <span style={{color: '#388e3c'}}>({[...names].join(', ')})</span></li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ) : (
-                <div style={{color: '#888', fontSize: '0.98em'}}>No date selected.</div>
-              )}
-            </div>
 
-            <ParticipantsSection participants={pollData.participants} />
+            <ParticipantsSection 
+              participants={pollData.participants}
+              selectedDate={selectedDate}
+            />
 
             <div className="share-section">
               <h3>Share Results</h3>
