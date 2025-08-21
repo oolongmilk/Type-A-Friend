@@ -185,19 +185,7 @@ const PollResults = () => {
               participants={pollData.participants}
               selectedDate={selectedDate}
             />
-
-            <div className="share-section">
-              <h3>Share Results</h3>
-              <div className="share-link">
-                <code>{window.location.href}</code>
-              </div>
-               <button 
-                  onClick={() => navigator.clipboard.writeText(window.location.href)}
-                  className="button small"
-                >
-                  Copy Link
-                </button>
-            </div>
+            
             <div className="form-actions" style={{marginTop: '2rem'}}>
               <Link to="/find-time" className="button primary">Create New Poll</Link>
             </div>
