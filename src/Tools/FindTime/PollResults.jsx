@@ -56,7 +56,7 @@ const PollResults = () => {
   }
 
   // Build a map: date -> { count, names, times: { time -> [names] } }
-  // Used for rednering the cal and partipant details
+  // Used for rendering the calendar and participant details
   const dateMap = {};
   if (pollData && pollData.participants) {
     pollData.participants.forEach(p => {
@@ -109,7 +109,7 @@ const PollResults = () => {
             {/* Best day(s) banner */}
             {bestCombos.length > 0 ? (
               <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 className="besttime-title">
+                <h3 className="suggestion-title">
                   <img src={thumbs} alt="Best" />
                   Best Time{bestCombos.length > 1 ? 's' : ''}
                   

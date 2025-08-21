@@ -1,4 +1,4 @@
-.besttime-title img {
+.suggestion-title img {
   height: 3em;
   width: 3em;
   vertical-align: middle;
@@ -8,7 +8,7 @@
   padding: 1rem 1.2rem;
 }
 /* Best time h3 in PollResults */
-.besttime-title {
+.suggestion-title {
   color: #388e3c;
   display: flex;
   align-items: center;

@@ -1,7 +1,7 @@
 /* Highlight best available day(s) */
 .calendar-day.best-time {
-  background: #e0f7fa;
-  border-color: #00bcd4;
+  background: #e0f7fa !important;
+  border-color: #00bcd4 !important;
   box-shadow: 0 0 0 2px #00bcd433;
   color: #00796b;
   font-weight: 700;
