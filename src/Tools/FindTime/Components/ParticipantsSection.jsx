@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { duckMap } from '../Utils/utils.js';
 import arrow from '../../../assets/arrow.svg';
+import './PartipantsSection.css';
 
 // Helper: sort times chronologically (assumes 24-hour or 12-hour format with AM/PM)
 function sortTimes(times) {
@@ -15,7 +16,7 @@ function sortTimes(times) {
     return parse(a) - parse(b);
   });
 }
-import './PartipantsSection.css';
+
 
 // Helper: get available times for a participant on a date
 function getAvailableTimesForDate(participant, date) {
@@ -37,6 +38,8 @@ export default function ParticipantsSection({ participants, selectedDate }) {
   }
   const canMakeIt = [];
   const cannotMakeIt = [];
+  const [openIndexes, setOpenIndexes] = useState([]);
+  
   participants.forEach(p => {
     const times = getAvailableTimesForDate(p, selectedDate);
     if (times.length > 0) {
@@ -54,7 +57,6 @@ export default function ParticipantsSection({ participants, selectedDate }) {
           {canMakeIt.length === 0 && <div style={{color:'#888'}}>No one is available for this day.</div>}
               {canMakeIt.map((p, index) => {
                 const DuckIcon = duckMap[p.color];
-                const [openIndexes, setOpenIndexes] = useState([]);
                 const isOpen = openIndexes.includes(index);
                 const toggleDropdown = idx => {
                   setOpenIndexes(open => open.includes(idx)
