@@ -137,7 +137,7 @@ const PollResults = () => {
               days={calendarData.days}
               monthName={calendarData.monthName}
               selectedDate={selectedDate}
-              onDateSelect={date => dateMap[date] && setSelectedDate(date)}
+              onDateSelect={setSelectedDate}
               dayModifiers={dayObj => {
                 const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
                 return [ isBest ? 'best-time' : ''].filter(Boolean).join(' ');
@@ -145,24 +145,20 @@ const PollResults = () => {
               renderDayExtras={dayObj => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
                 if (participantsForDay && participantsForDay.length > 0) {
+                  // Show a single duck icon with a number badge for count
+                  const count = participantsForDay.length;
+                  // Use the first participant's duck color, or yellow as fallback
+                  const DuckIcon = duckMap['yellow'];
                   return (
-                    <span className="calendar-existing-indicator">
-                      {participantsForDay.map((p, i) => {
-                        const DuckIcon = duckMap[p.color];
-                        return (
-                          <DuckIcon
-                            key={p.name + i}
-                            style={{ width: 18, height: 18, marginRight: 1, marginBottom: 1, flex: '0 0 18px' }}
-                            title={p.name}
-                          />
-                        );
-                      })}
+                    <span className="duck-indicator">
+                      <DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/>
                     </span>
                   );
                 }
                 return null;
               }}
               disablePast={true}
+              showSelectedLeaf={false}
             />
             {/* Legend under calendar */}
             <div className="legend" style={{marginTop: '1rem'}}>

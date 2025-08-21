@@ -20,7 +20,8 @@ export default function CalendarGrid({
   onDateSelect,
   dayModifiers = () => '',
   renderDayExtras = () => null,
-  disablePast = true
+  disablePast = true,
+  showSelectedLeaf = true
 }) {
   return (
     <div className="calendar-container">
@@ -53,7 +54,7 @@ export default function CalendarGrid({
               style={{ position: 'relative' }}
             >
               {/* Leaf SVG is added here when the day is selected */}
-              {isSelected && (
+              {isSelected && showSelectedLeaf && (
                 <img
                   src={leaf}
                   alt="Selected"
