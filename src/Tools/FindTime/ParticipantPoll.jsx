@@ -302,6 +302,7 @@ function ParticipantPoll() {
                     selectedTimes={currentSelectedTimes}
                     onTimeToggle={toggleTimeForDate}
                     existingTimes={currentSelectedDate ? getExistingTimesForDate(currentSelectedDate) : []}
+                    thirtyMinute={!!(pollData && pollData.thirtyMinuteIntervals)}
                   />
 
                   <div className="legend">
