@@ -7,6 +7,7 @@ import { database } from '../../firebase';
 import {  getMonthDays } from './Utils/utils';
 import CalendarHeader from './Components/CalendarHeader';
 import TimeGrid from './Components/TimeGrid';
+import TimeToggle from './Components/TimeToggle';
 import SelectedTimesList from './Components/SelectedTimesList';
 import CalendarGrid from './Components/CalendarGrid';
 import { spinner } from './Components/Spinner';
@@ -79,6 +80,8 @@ function ParticipantPoll() {
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
   const [allAvailableCombos, setAllAvailableCombos] = useState(new Set());
+  // Local toggle for 30-minute intervals
+  const [thirtyMinute, setThirtyMinute] = useState(false);
 
   // Load poll and compute all available combos from all participants (Firebase)
   useEffect(() => {
@@ -280,6 +283,9 @@ function ParticipantPoll() {
 
               <div className="form-section">
                 <label>Step 2: Select Times (multiple allowed):</label>
+                <div style={{ margin: '0.5em 0 1em 0' }}>
+                    <TimeToggle value={thirtyMinute} onChange={setThirtyMinute} />
+                  </div>
                 <div className="time-selection">
                   <div className="current-selections">
                     <div className="selection-display">
@@ -302,6 +308,7 @@ function ParticipantPoll() {
                     selectedTimes={currentSelectedTimes}
                     onTimeToggle={toggleTimeForDate}
                     existingTimes={currentSelectedDate ? getExistingTimesForDate(currentSelectedDate) : []}
+                    thirtyMinute={thirtyMinute}
                   />
 
                   <div className="legend">
