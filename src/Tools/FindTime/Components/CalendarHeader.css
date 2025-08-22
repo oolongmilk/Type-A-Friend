@@ -4,7 +4,29 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
-  gap: 0.5rem;
+  width: 100%;
+}
+.calendar-header-col {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.calendar-header-col.left {
+  justify-content: flex-start;
+}
+.calendar-header-col.center {
+  justify-content: center;
+}
+.calendar-header-col.right {
+  justify-content: flex-end;
+}
+
+.leaf-nav-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .styled-nav-btn {
