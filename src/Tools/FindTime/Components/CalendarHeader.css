@@ -56,14 +56,9 @@
 .today-btn {
   font-weight: 700;
   color: #fff;
-  border-color: #6DB96D;
-  background: #6DB96D;
+  background: #81BF7E;
 }
-.today-btn:not(:disabled):hover {
-  background: #8AC887;
-  border-color: #388e3c;
-  color: #fff;
-}
+
 .today-btn:disabled {
   background: #f3f4f6;
   color: #888;

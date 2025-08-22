@@ -1,7 +1,7 @@
 
 import './CalendarHeader.css';
-import rightLeaf from '../../../assets/leaf5.svg';
-import leftLeaf from '../../../assets/leaf6.svg';
+import rightarrow from '../../../assets/right.svg';
+import leftarrow from '../../../assets/left.svg';
 
 export default function CalendarHeader({
 	displayYear,
@@ -24,7 +24,7 @@ export default function CalendarHeader({
 										onClick={goToPrevMonth}
 										disabled={displayYear === minDate.getFullYear() && displayMonth === minDate.getMonth()}
 									>	
-                                    <img src={leftLeaf} alt="" width={28} height={28} />
+                                    <img src={leftarrow} alt="" width={40} height={40} />
 									</button>
 						</div>
 						<div className="calendar-header-col center">
@@ -49,7 +49,7 @@ export default function CalendarHeader({
 										onClick={goToNextMonth}
 										disabled={displayYear === maxDate.getFullYear() && displayMonth === maxDate.getMonth()}
 									>
-                                    <img src={rightLeaf} alt="" width={28} height={28} />
+                                    <img src={rightarrow} alt="" width={40} height={40} />
 									</button>
 						</div>
 					</div>
