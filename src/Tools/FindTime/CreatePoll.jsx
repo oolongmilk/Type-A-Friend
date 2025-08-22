@@ -10,6 +10,7 @@ import SelectedTimesList from './Components/SelectedTimesList';
 import ShareLinkModal from './Components/ShareLinkModal';
 import { getMonthDays } from './Utils/utils';
 import CalendarGrid from './Components/CalendarGrid';
+import CalendarHeader from './Components/CalendarHeader';
 
 
 
@@ -190,39 +191,17 @@ function CreatePoll() {
 
             <div className="form-section">
               <label>Step 1: Select dates that work:</label>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <button
-                  type="button"
-                  className="calendar-nav-btn"
-                  onClick={goToPrevMonth}
-                  disabled={displayYear === minDate.getFullYear() && displayMonth === minDate.getMonth()}
-                  aria-label="Previous Month"
-                >
-                  &#8592; Prev
-                </button>
-                <button
-                  type="button"
-                  className="calendar-nav-btn"
-                  onClick={() => {
-                    setDisplayYear(today.getFullYear());
-                    setDisplayMonth(today.getMonth());
-                  }}
-                  aria-label="Go to Today"
-                  style={{ fontWeight: 600 }}
-                  disabled={displayYear === today.getFullYear() && displayMonth === today.getMonth()}
-                >
-                  Today
-                </button>
-                <button
-                  type="button"
-                  className="calendar-nav-btn"
-                  onClick={goToNextMonth}
-                  disabled={displayYear === maxDate.getFullYear() && displayMonth === maxDate.getMonth()}
-                  aria-label="Next Month"
-                >
-                  Next &#8594;
-                </button>
-              </div>
+              <CalendarHeader
+                displayYear={displayYear}
+                displayMonth={displayMonth}
+                minDate={minDate}
+                maxDate={maxDate}
+                today={today}
+                goToPrevMonth={goToPrevMonth}
+                goToNextMonth={goToNextMonth}
+                setDisplayYear={setDisplayYear}
+                setDisplayMonth={setDisplayMonth}
+              />
               <CalendarGrid
                 days={calendarData.days}
                 monthName={calendarData.monthName}

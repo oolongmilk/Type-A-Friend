@@ -1,0 +1,49 @@
+/* CalendarHeader navigation styling */
+.calendar-header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 0.5rem;
+}
+
+.styled-nav-btn {
+  background: #fff;
+  border: 1px solid #93B793;
+  color: #388e3c;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.35em 1.1em;
+  font-size: 1rem;
+  transition: background 0.15s, border 0.15s, color 0.15s;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.styled-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f3f4f6;
+  color: #888;
+  border-color: #d1d5db;
+}
+.styled-nav-btn:not(:disabled):hover {
+  background: #e6f7e6;
+  border-color: #6DB96D;
+  color: #388e3c;
+}
+.today-btn {
+  font-weight: 700;
+  color: #fff;
+  border-color: #6DB96D;
+  background: #6DB96D;
+}
+.today-btn:not(:disabled):hover {
+  background: #8AC887;
+  border-color: #388e3c;
+  color: #fff;
+}
+.today-btn:disabled {
+  background: #f3f4f6;
+  color: #888;
+  border-color: #d1d5db;
+}
