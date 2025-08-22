@@ -9,6 +9,7 @@ import WhosGoing from './Tools/WhosGoing/WhosGoing.jsx';
 import ForTypeBs from './ForTypeBs.jsx';
 import './App.css';
 import ScrollToTop from './ScrollToTop.jsx';
+import NotFound from './NotFound';
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
         <Route path="/whos-going" element={<WhosGoing />} />
         <Route path="/about" element={<About />} />
         <Route path="/for-type-bs" element={<ForTypeBs />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <footer className="footer">
         <div className="footer-content">
