@@ -1,5 +1,6 @@
 
-import { formatDateTime, getCurrentMonthDays, duckMap } from './Utils/utils.js';
+import { formatDateTime, getCurrentMonthDays, getMonthDays, duckMap } from './Utils/utils.js';
+import CalendarHeader from './Components/CalendarHeader';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
@@ -16,8 +17,38 @@ import leaf from '../../assets/leaf.svg';
 const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
-  const [selectedDate, setSelectedDate] = useState(null);
-  const calendarData = getCurrentMonthDays();
+  const [selectedDate, setSelectedDate] = useState('');
+  // Calendar navigation state (same as CreatePoll/ParticipantPoll)
+  const today = new Date();
+  const [displayYear, setDisplayYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(today.getMonth());
+  // Only allow up to 1 year from today
+  const minDate = new Date(today);
+  const maxDate = new Date(today);
+  maxDate.setFullYear(today.getFullYear() + 1);
+  maxDate.setDate(maxDate.getDate() - 1); // up to 1 year from today
+
+  const calendarData = getMonthDays(displayYear, displayMonth);
+
+  // Navigation handlers
+  const goToPrevMonth = () => {
+    if (displayYear === minDate.getFullYear() && displayMonth === minDate.getMonth()) return;
+    if (displayMonth === 0) {
+      setDisplayMonth(11);
+      setDisplayYear(displayYear - 1);
+    } else {
+      setDisplayMonth(displayMonth - 1);
+    }
+  };
+  const goToNextMonth = () => {
+    if (displayYear === maxDate.getFullYear() && displayMonth === maxDate.getMonth()) return;
+    if (displayMonth === 11) {
+      setDisplayMonth(0);
+      setDisplayYear(displayYear + 1);
+    } else {
+      setDisplayMonth(displayMonth + 1);
+    }
+  };
 
   useEffect(() => {
     if (shareCode) {
@@ -133,6 +164,17 @@ const PollResults = () => {
               <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
             )}
             {/* Calendar grid */}
+            <CalendarHeader
+              displayYear={displayYear}
+              displayMonth={displayMonth}
+              minDate={minDate}
+              maxDate={maxDate}
+              today={today}
+              goToPrevMonth={goToPrevMonth}
+              goToNextMonth={goToNextMonth}
+              setDisplayYear={setDisplayYear}
+              setDisplayMonth={setDisplayMonth}
+            />
             <CalendarGrid
               days={calendarData.days}
               monthName={calendarData.monthName}
@@ -140,7 +182,8 @@ const PollResults = () => {
               onDateSelect={setSelectedDate}
               dayModifiers={dayObj => {
                 const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
-                return [ isBest ? 'best-time' : ''].filter(Boolean).join(' ');
+                const isSelected = selectedDate === dayObj.date;
+                return [isBest ? 'best-time' : '', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
               }}
               renderDayExtras={dayObj => {
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
