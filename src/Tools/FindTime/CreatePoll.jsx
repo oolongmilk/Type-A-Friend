@@ -6,6 +6,7 @@ import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
+import TimeToggle from './Components/TimeToggle';
 import SelectedTimesList from './Components/SelectedTimesList';
 import ShareLinkModal from './Components/ShareLinkModal';
 import { getMonthDays } from './Utils/utils';
@@ -27,9 +28,13 @@ function CreatePoll() {
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
   
+
   // Modal state for sharing
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareCode, setshareCode] = useState('');
+
+  // New: Toggle for 30-minute intervals
+  const [thirtyMinute, setThirtyMinute] = useState(false);
 
   // Calendar navigation state
   const today = new Date();
@@ -217,6 +222,9 @@ function CreatePoll() {
           <div className="right-column">
             <div className="form-section">
               <label>Step 2: Select Times (multiple allowed):</label>
+              <div style={{ margin: '0.5em 0 1em 0' }}>
+                <TimeToggle value={thirtyMinute} onChange={setThirtyMinute} />
+              </div>
               <div className="time-selection">
                 <div className="current-selections">
                   <div className="selection-display">
@@ -240,6 +248,7 @@ function CreatePoll() {
                 <TimeGrid
                   selectedTimes={currentSelectedTimes}
                   onTimeToggle={toggleTimeSlotSelection}
+                  thirtyMinute={thirtyMinute}
                 />
                 
                 <div className="add-section">
