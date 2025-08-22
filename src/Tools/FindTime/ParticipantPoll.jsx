@@ -11,6 +11,7 @@ import SelectedTimesList from './Components/SelectedTimesList';
 import CalendarGrid from './Components/CalendarGrid';
 import { spinner } from './Components/Spinner';
 import leaf from '../../assets/leaf.svg';
+import NotFound from '../../NotFound';
 // Utility functions for poll management
 const loadPollFromFirebase = (shareCode, callback) => {
   const pollRef = ref(database, 'polls/' + shareCode);
@@ -217,18 +218,9 @@ function ParticipantPoll() {
     }
   };
 
-  if (mode === 'not-found') {
-    return (
-      <main className="main-content">
-        <div className="poll-container">
-          <h2>🔍 Poll Not Found</h2>
-          <p>The poll code "{shareCode}" doesn't exist or has expired.</p>
-          <Link to="/find-time" className="button">Create New Poll</Link>
-          <Link to="/">← Back to Home</Link>
-        </div>
-      </main>
-    );
-  }
+    if (mode === 'not-found') {
+      return <NotFound />;
+    }
 
   if (mode === 'participate') {
     return (
