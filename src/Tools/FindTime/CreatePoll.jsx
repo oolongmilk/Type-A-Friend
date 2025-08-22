@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import leaf from '../../assets/leaf.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
-import { ref, set, push } from 'firebase/database';
+import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
@@ -55,7 +55,8 @@ function CreatePoll() {
     const newPoll = {
       id: generatedId,
       eventName: eventName.trim(),
-      color: 'glasses', // Default duck color for the poll owner
+      color: 'glasses', // Default duck color for the poll owner,
+      createdAt: serverTimestamp(),
       participants: [
         {
           name: creatorName.trim(),
