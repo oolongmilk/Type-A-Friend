@@ -11,7 +11,7 @@ import '../FindTime.css';
  */
 export default function ShareLinkModal({ shareCode, onClose, onViewPoll }) {
   const pollUrl = `${window.location.origin}/find-time/${shareCode}`;
-  const copyText = `🌱 Hey I'm planning an event!\n🗓️ Add your availability: ${pollUrl}\n⭐ See the results: ${pollUrl}/results`;
+  const copyText = `🌱 Hey I'm planning an event!\n🗓️ Add your availability: ${pollUrl}\n🌟 See the results: ${pollUrl}/results`;
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
