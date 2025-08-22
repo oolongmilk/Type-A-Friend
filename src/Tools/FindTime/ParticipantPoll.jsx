@@ -4,7 +4,8 @@ import './FindTime.css';
 import { formatDateTime, getAllAvailableCombos } from './Utils/utils';
 import { ref, onValue, set, update } from 'firebase/database';
 import { database } from '../../firebase';
-import { getCurrentMonthDays } from './Utils/utils';
+import {  getMonthDays } from './Utils/utils';
+import CalendarHeader from './Components/CalendarHeader';
 import TimeGrid from './Components/TimeGrid';
 import SelectedTimesList from './Components/SelectedTimesList';
 import CalendarGrid from './Components/CalendarGrid';
@@ -184,7 +185,37 @@ function ParticipantPoll() {
     return times;
   };
 
-  const calendarData = getCurrentMonthDays();
+  // Calendar navigation state (same as CreatePoll)
+  const today = new Date();
+  const [displayYear, setDisplayYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(today.getMonth());
+  // Only allow up to 1 year from today
+  const minDate = new Date(today);
+  const maxDate = new Date(today);
+  maxDate.setFullYear(today.getFullYear() + 1);
+  maxDate.setDate(maxDate.getDate() - 1); // up to 1 year from today
+
+  const calendarData = getMonthDays(displayYear, displayMonth);
+
+  // Navigation handlers
+  const goToPrevMonth = () => {
+    if (displayYear === minDate.getFullYear() && displayMonth === minDate.getMonth()) return;
+    if (displayMonth === 0) {
+      setDisplayMonth(11);
+      setDisplayYear(displayYear - 1);
+    } else {
+      setDisplayMonth(displayMonth - 1);
+    }
+  };
+  const goToNextMonth = () => {
+    if (displayYear === maxDate.getFullYear() && displayMonth === maxDate.getMonth()) return;
+    if (displayMonth === 11) {
+      setDisplayMonth(0);
+      setDisplayYear(displayYear + 1);
+    } else {
+      setDisplayMonth(displayMonth + 1);
+    }
+  };
 
   if (mode === 'not-found') {
     return (
@@ -224,6 +255,17 @@ function ParticipantPoll() {
 
               <div className="form-section">
                 <label>Step 1: Select dates that work for you:</label>
+                <CalendarHeader
+                  displayYear={displayYear}
+                  displayMonth={displayMonth}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  today={today}
+                  goToPrevMonth={goToPrevMonth}
+                  goToNextMonth={goToNextMonth}
+                  setDisplayYear={setDisplayYear}
+                  setDisplayMonth={setDisplayMonth}
+                />
                 <CalendarGrid
                   days={calendarData.days}
                   monthName={calendarData.monthName}
@@ -233,11 +275,12 @@ function ParticipantPoll() {
                   renderDayExtras={dayObj => hasExistingSelections(dayObj.date) ? (
                     <span className="calendar-existing-indicator" title="Available">✓</span>
                   ) : null}
+                  disablePast={true}
                 />
-                 <div className="legend">
-                    <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
-                    <span>Times that work for others</span>
-                  </div>
+                <div className="legend">
+                  <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
+                  <span>Times that work for others</span>
+                </div>
               </div>
             </div>
 

@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import leaf from '../../assets/leaf.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
-import { ref, set, push } from 'firebase/database';
+import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
 import SelectedTimesList from './Components/SelectedTimesList';
 import ShareLinkModal from './Components/ShareLinkModal';
-import { getCurrentMonthDays } from './Utils/utils';
+import { getMonthDays } from './Utils/utils';
 import CalendarGrid from './Components/CalendarGrid';
+import CalendarHeader from './Components/CalendarHeader';
 
 
 
@@ -30,7 +31,37 @@ function CreatePoll() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareCode, setshareCode] = useState('');
 
-  const calendarData = getCurrentMonthDays();
+  // Calendar navigation state
+  const today = new Date();
+  const [displayYear, setDisplayYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(today.getMonth());
+  // Only allow up to 1 year from today
+  const minDate = new Date(today);
+  const maxDate = new Date(today);
+  maxDate.setFullYear(today.getFullYear() + 1);
+  maxDate.setDate(maxDate.getDate() - 1); // up to 1 year from today
+
+  const calendarData = getMonthDays(displayYear, displayMonth);
+
+  // Navigation handlers
+  const goToPrevMonth = () => {
+    if (displayYear === minDate.getFullYear() && displayMonth === minDate.getMonth()) return;
+    if (displayMonth === 0) {
+      setDisplayMonth(11);
+      setDisplayYear(displayYear - 1);
+    } else {
+      setDisplayMonth(displayMonth - 1);
+    }
+  };
+  const goToNextMonth = () => {
+    if (displayYear === maxDate.getFullYear() && displayMonth === maxDate.getMonth()) return;
+    if (displayMonth === 11) {
+      setDisplayMonth(0);
+      setDisplayYear(displayYear + 1);
+    } else {
+      setDisplayMonth(displayMonth + 1);
+    }
+  };
 
   const createPoll = async () => {
     if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
@@ -55,7 +86,8 @@ function CreatePoll() {
     const newPoll = {
       id: generatedId,
       eventName: eventName.trim(),
-      color: 'glasses', // Default duck color for the poll owner
+      color: 'glasses', // Default duck color for the poll owner,
+      createdAt: serverTimestamp(),
       participants: [
         {
           name: creatorName.trim(),
@@ -156,13 +188,26 @@ function CreatePoll() {
               />
             </div>
 
+
             <div className="form-section">
               <label>Step 1: Select dates that work:</label>
+              <CalendarHeader
+                displayYear={displayYear}
+                displayMonth={displayMonth}
+                minDate={minDate}
+                maxDate={maxDate}
+                today={today}
+                goToPrevMonth={goToPrevMonth}
+                goToNextMonth={goToNextMonth}
+                setDisplayYear={setDisplayYear}
+                setDisplayMonth={setDisplayMonth}
+              />
               <CalendarGrid
                 days={calendarData.days}
                 monthName={calendarData.monthName}
                 selectedDate={currentSelectedDate}
                 onDateSelect={toggleDateSelection}
+                disablePast={true}
               />
             </div>
 

@@ -35,37 +35,41 @@ export function getAllAvailableCombos(participants) {
 }
 
 
-  // Calendar grid logic (match CreatePoll)
-  export function getCurrentMonthDays() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-    const days = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    for (let i = 0; i < 42; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
-      const dateString = currentDate.toISOString().split('T')[0];
-      const isCurrentMonth = currentDate.getMonth() === month;
-      const isToday = currentDate.getTime() === today.getTime();
-      const isPast = currentDate < today;
-      days.push({
-        date: dateString,
-        day: currentDate.getDate(),
-        isCurrentMonth,
-        isToday,
-        isPast
-      });
-    }
-    return {
-      days,
-      monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    };
+
+// Calendar grid logic for any month/year
+export function getMonthDays(year, month) {
+  const firstDay = new Date(year, month, 1);
+  const startDate = new Date(firstDay);
+  startDate.setDate(startDate.getDate() - firstDay.getDay());
+  const days = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (let i = 0; i < 42; i++) {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+    const dateString = currentDate.toISOString().split('T')[0];
+    const isCurrentMonth = currentDate.getMonth() === month && currentDate.getFullYear() === year;
+    const isToday = currentDate.getTime() === today.getTime();
+    const isPast = currentDate < today;
+    days.push({
+      date: dateString,
+      day: currentDate.getDate(),
+      isCurrentMonth,
+      isToday,
+      isPast
+    });
+  }
+  return {
+    days,
+    monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
   };
+}
+
+// Backward compatibility: current month
+export function getCurrentMonthDays() {
+  const now = new Date();
+  return getMonthDays(now.getFullYear(), now.getMonth());
+}
 
  export const duckMap = {
      black: BlackDuck,
