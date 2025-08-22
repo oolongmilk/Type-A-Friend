@@ -93,7 +93,6 @@ function CreatePoll() {
       eventName: eventName.trim(),
       color: 'glasses', // Default duck color for the poll owner,
       createdAt: serverTimestamp(),
-      thirtyMinuteIntervals: thirtyMinute,
       participants: [
         {
           name: creatorName.trim(),
