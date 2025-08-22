@@ -18,6 +18,8 @@ const PollResults = () => {
   const { shareCode } = useParams();
   const [pollData, setPollData] = useState(undefined); // undefined = loading, null = not found
   const [selectedDate, setSelectedDate] = useState('');
+  // New: track which suggested time is selected
+  const [selectedCombo, setSelectedCombo] = useState(null);
   // Calendar navigation state (same as CreatePoll/ParticipantPoll)
   const today = new Date();
   const [displayYear, setDisplayYear] = useState(today.getFullYear());
@@ -102,27 +104,20 @@ const PollResults = () => {
     });
   }
 
-  // Find best date/time(s)
+  // Find top 3 best date/time(s) with the highest overlaps
   let bestCombos = [];
-  let maxCount = 0;
   if (pollData && pollData.participants) {
     const comboCounts = new Map();
     pollData.participants.forEach(p => {
       (Array.isArray(p.dateTimeCombos) ? p.dateTimeCombos : []).forEach(combo => {
-        const count = (comboCounts.get(combo) || 0) + 1;
-        comboCounts.set(combo, count);
-        if (count > maxCount) {
-          maxCount = count;
-          bestCombos = [combo];
-        } else if (count === maxCount) {
-          bestCombos.push(combo);
-        }
+        comboCounts.set(combo, (comboCounts.get(combo) || 0) + 1);
       });
     });
-    // Remove duplicates in bestCombos (if any)
-    bestCombos = [...new Set(bestCombos)];
-    // Only consider bestCombos if more than one person is available
-    if (maxCount <= 1) bestCombos = [];
+    // Sort combos by count descending, then by time ascending for tie-breaker
+    const sortedCombos = Array.from(comboCounts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    // Only consider combos with more than one person
+    bestCombos = sortedCombos.filter(([combo, count]) => count > 1).map(([combo]) => combo).slice(0, 3);
   }
 
   
@@ -142,7 +137,7 @@ const PollResults = () => {
               <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
                 <h3 className="suggestion-title">
                   <img src={thumbs} alt="Best" />
-                  Best Time{bestCombos.length > 1 ? 's' : ''}
+                  Suggested Times{bestCombos.length > 1 ? 's' : ''}
                   
                 </h3>
                 <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
@@ -151,10 +146,21 @@ const PollResults = () => {
                     const names = pollData.participants
                       .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
                       .map(p => p.name);
+                    const everyone = names.length === pollData.participants.length;
+                    const isSelected = selectedCombo === combo;
                     return (
-                      <li key={combo} style={{marginBottom: 4}}>
+                      <li
+                        key={combo}
+                        style={{marginBottom: 4, cursor: 'pointer', background: isSelected ? '#e0f7fa' : undefined, borderRadius: 6, padding: '2px 6px'}}
+                        onClick={() => setSelectedCombo(combo)}
+                      >
                         <strong>{formatDateTime(combo)}</strong>
-                        <span style={{marginLeft: 8, color: '#388e3c'}}>({names.join(', ')})</span>
+                        <span style={{marginLeft: 8, color: '#388e3c'}}>
+                          ({everyone
+                            ? 'Everyone'
+                            : `${names.length} / ${pollData.participants.length} can make it`
+                          })
+                        </span>
                       </li>
                     );
                   })}
@@ -228,6 +234,7 @@ const PollResults = () => {
             <ParticipantsSection 
               participants={pollData.participants}
               selectedDate={selectedDate}
+              selectedCombo={selectedCombo}
             />
 
             <div className="form-actions" style={{marginTop: '2rem'}}>

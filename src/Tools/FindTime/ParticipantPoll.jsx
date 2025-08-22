@@ -273,8 +273,16 @@ function ParticipantPoll() {
                   disablePast={true}
                 />
                 <div className="legend">
-                  <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
-                  <span>Times that work for others</span>
+                  <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1.5em', flexWrap: 'wrap', color: '#222'}}>
+                    <li>
+                      <span className="existing-indicator" style={{position: 'static', display: 'inline-flex', verticalAlign: 'middle', marginRight: 6, color: '#388e3c'}}>✓</span>
+                      <span>Times that work for others</span>
+                    </li>
+                    <li>
+                      <span style={{background: '#fff3e0', borderColor: '#ff9800', boxShadow: '0 0 0 2px #ff9800', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span>
+                      <span> = Today</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
