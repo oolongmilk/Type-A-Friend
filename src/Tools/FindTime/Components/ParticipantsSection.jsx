@@ -32,25 +32,40 @@ function getAvailableTimesForDate(participant, date) {
  * - participants: array of { name, dateTimeCombos }
  * - selectedDate: string (YYYY-MM-DD)
  */
-export default function ParticipantsSection({ participants, selectedDate }) {
-  if (!selectedDate) {
-    return <div className="participants-section"><h3>Participants</h3><div style={{color:'#888'}}>Select a date to see details.</div></div>;
+export default function ParticipantsSection({ participants, selectedDate, selectedCombo }) {
+  // If a combo is selected, show who can/cannot make that exact combo (date+time)
+  // Otherwise, fall back to selectedDate logic
+  if (!selectedDate && !selectedCombo) {
+    return <div className="participants-section"><h3>Participants</h3><div style={{color:'#888'}}>
+      Click on a suggested time or the calendar to see more details.
+      </div></div>;
   }
   const canMakeIt = [];
   const cannotMakeIt = [];
   const [openIndexes, setOpenIndexes] = useState([]);
   useEffect(() => {
     setOpenIndexes([]);
-  }, [selectedDate]);
+  }, [selectedDate, selectedCombo]);
 
-  participants.forEach(p => {
-    const times = getAvailableTimesForDate(p, selectedDate);
-    if (times.length > 0) {
-      canMakeIt.push({ ...p, times });
-    } else {
-      cannotMakeIt.push(p);
-    }
-  });
+  if (selectedCombo) {
+    // selectedCombo is in the form YYYY-MM-DDTHH:MM AM/PM
+    participants.forEach(p => {
+      if (Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(selectedCombo)) {
+        canMakeIt.push({ ...p, times: [selectedCombo.split('T')[1]] });
+      } else {
+        cannotMakeIt.push(p);
+      }
+    });
+  } else if (selectedDate) {
+    participants.forEach(p => {
+      const times = getAvailableTimesForDate(p, selectedDate);
+      if (times.length > 0) {
+        canMakeIt.push({ ...p, times });
+      } else {
+        cannotMakeIt.push(p);
+      }
+    });
+  }
   return (
     <div className="participants-section">
       <h3>Participants</h3>
