@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import leaf from '../../assets/leaf.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import './FindTime.css';
-import { ref, set } from 'firebase/database';
+import { ref, set, push } from 'firebase/database';
 import { database } from '../../firebase';
 import { formatDateTime } from './Utils/utils';
 import TimeGrid from './Components/TimeGrid';
@@ -11,10 +11,7 @@ import ShareLinkModal from './Components/ShareLinkModal';
 import { getCurrentMonthDays } from './Utils/utils';
 import CalendarGrid from './Components/CalendarGrid';
 
-// Utility functions for poll management
-const generateShareCode = () => {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-};
+
 
 
 function CreatePoll() {
@@ -31,7 +28,7 @@ function CreatePoll() {
   
   // Modal state for sharing
   const [showShareModal, setShowShareModal] = useState(false);
-  const [shareCode, setShareCode] = useState('');
+  const [shareCode, setshareCode] = useState('');
 
   const calendarData = getCurrentMonthDays();
 
@@ -41,12 +38,24 @@ function CreatePoll() {
       return;
     }
 
-    const newShareCode = generateShareCode();
+
+
+    // Generate a new, unique Push ID
+    const shareEventsRef = ref(database, 'polls');
+    const newSharecodeRef = push(shareEventsRef); // This creates a new reference with a unique key
+    const generatedId = newSharecodeRef.key; // This is the 20-character Push ID!
+
+    if (!generatedId) {
+      console.error("Failed to generate a Push ID.");
+      return;
+    }
+    setshareCode(generatedId);
+
+
     const newPoll = {
-      id: newShareCode,
+      id: generatedId,
       eventName: eventName.trim(),
       color: 'glasses', // Default duck color for the poll owner
-      owner: creatorName.trim(),
       participants: [
         {
           name: creatorName.trim(),
@@ -57,11 +66,10 @@ function CreatePoll() {
     };
 
     try {
-      await set(ref(database, 'polls/' + newShareCode), newPoll);
-      setShareCode(newShareCode);
+      await set(ref(database, 'polls/' + generatedId), newPoll);
       setShowShareModal(true);
     } catch (error) {
-      alert("Oops there's been an error saving poll to database!");
+      alert("Oops there's been an error saving the poll! Please try again later");
     }
   };
 
