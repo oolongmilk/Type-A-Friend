@@ -20,6 +20,8 @@ const PollResults = () => {
   const [selectedDate, setSelectedDate] = useState('');
   // New: track which suggested time is selected
   const [selectedCombo, setSelectedCombo] = useState(null);
+  // View toggle: 'suggested' or 'calendar'
+  const [view, setView] = useState('suggested');
   // Calendar navigation state (same as CreatePoll/ParticipantPoll)
   const today = new Date();
   const [displayYear, setDisplayYear] = useState(today.getFullYear());
@@ -130,60 +132,80 @@ const PollResults = () => {
           <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
           {pollData.eventName}
         </h2>
-        <div className="two-column-layout">
-          <div className="left-column">
-            {/* Best day(s) banner */}
-            {bestCombos.length > 0 ? (
-              <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 className="suggestion-title">
-                  <img src={thumbs} alt="Best" />
-                  Suggested Times
-                  
-                </h3>
-                <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-                  {bestCombos.map(combo => {
-                    const [date, time] = combo.split('T');
-                    const names = pollData.participants
-                      .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
-                      .map(p => p.name);
-                    const everyone = names.length === pollData.participants.length;
-                    const isSelected = selectedCombo === combo;
-                    return (
-                      <li
-                        key={combo}
-                        className="selected-combo"
-                        onClick={() => setSelectedCombo(combo)}
-                        tabIndex={0}
-                        role="radio"
-                        aria-checked={isSelected}
-                      >
-                        <span className="radio-outter">
-                          {isSelected && <span className="radio-inner" />}
-                        </span>
-                        <strong>{formatDateTime(combo)}</strong>
-                        <span style={{marginLeft: 8, color: '#388e3c'}}>
-                          {everyone
-                            ? 'Everyone Available'
-                            : `${names.length} of ${pollData.participants.length} Available`
-                          }
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
+        {/* Modern pill-style segmented control for toggling views */}
+        <div className="segmented-tabs" style={{margin: '0 auto 24px auto'}}>
+          <button
+            className={`segmented-tab${view === 'suggested' ? ' active' : ''}`}
+            onClick={() => setView('suggested')}
+            aria-selected={view === 'suggested'}
+          >
+            Suggested Times
+          </button>
+          <button
+            className={`segmented-tab${view === 'calendar' ? ' active' : ''}`}
+            onClick={() => setView('calendar')}
+            aria-selected={view === 'calendar'}
+          >
+            View by Calendar
+          </button>
+          <div className="segmented-indicator" style={{ left: view === 'suggested' ? 0 : '50%' }} />
+        </div>
+
+        <div className="tab-content fade-in" key={view}>
+          {view === 'suggested' && (
+            <>
+              {bestCombos.length > 0 ? (
+                <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
+                  <h3 className="suggestion-title">
+                    <img src={thumbs} alt="Best" />
+                    Suggested Times
+                  </h3>
+                  <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                    {bestCombos.map(combo => {
+                      const [date, time] = combo.split('T');
+                      const names = pollData.participants
+                        .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
+                        .map(p => p.name);
+                      const everyone = names.length === pollData.participants.length;
+                      const isSelected = selectedCombo === combo;
+                      return (
+                        <li
+                          key={combo}
+                          className="selected-combo"
+                          onClick={() => setSelectedCombo(combo)}
+                          tabIndex={0}
+                          role="radio"
+                          aria-checked={isSelected}
+                        >
+                          <span className="radio-outter">
+                            {isSelected && <span className="radio-inner" />}
+                          </span>
+                          <strong>{formatDateTime(combo)}</strong>
+                          <span style={{marginLeft: 8, color: '#388e3c'}}>
+                            {everyone
+                              ? 'Everyone Available'
+                              : `${names.length} of ${pollData.participants.length} Available`
+                            }
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
+              )}
+              <ParticipantsSection 
+                participants={pollData.participants}
+                selectedDate={selectedDate}
+                selectedCombo={selectedCombo}
+              />
+              <div className="form-actions" style={{marginTop: '2rem'}}>
+                <Link to="/find-time" className="button primary">Create New Poll</Link>
               </div>
-            ) : (
-              <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
-            )}
-            <ParticipantsSection 
-              participants={pollData.participants}
-              selectedDate={selectedDate}
-              selectedCombo={selectedCombo}
-            />
-          </div>
-          {/* Right column: participants and share */}
-          <div className="right-column">
-            {/* Calendar grid */}
+            </>
+          )}
+          {view === 'calendar' && (
             <ResultsCalendarWrapper
               displayYear={displayYear}
               displayMonth={displayMonth}
@@ -200,10 +222,7 @@ const PollResults = () => {
               bestCombos={bestCombos}
               pollData={pollData}
             />
-            <div className="form-actions" style={{marginTop: '2rem'}}>
-              <Link to="/find-time" className="button primary">Create New Poll</Link>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './ResultsCalendarWrapper.css';
 import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
 import { duckMap } from '../Utils/utils.js';
@@ -20,6 +21,14 @@ export default function ResultsCalendarWrapper({
   bestCombos,
   pollData
 }) {
+  const [timelineDay, setTimelineDay] = useState(null); // date string
+
+  // Handler for calendar day click
+  const handleDateSelect = date => {
+    setSelectedDate(date);
+    setTimelineDay(date);
+  };
+
   return (
     <div className="results-calendar-wrapper">
       <CalendarHeader
@@ -37,7 +46,7 @@ export default function ResultsCalendarWrapper({
         days={calendarData.days}
         monthName={calendarData.monthName}
         selectedDate={selectedDate}
-        onDateSelect={setSelectedDate}
+        onDateSelect={handleDateSelect}
         dayModifiers={dayObj => {
           const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
           const isSelected = selectedDate === dayObj.date;
@@ -75,6 +84,15 @@ export default function ResultsCalendarWrapper({
           <li><span style={{background: '#fff3e0', borderColor: '#ff9800', boxShadow: '0 0 0 2px #ff9800', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Today</li>
         </ul>
       </div>
+
+      {/* Timeline panel for selected day */}
+      {timelineDay && (
+        <div className="timeline-panel" style={{marginTop: 24, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fafbfc'}}>
+          <strong style={{fontSize: '1.1em'}}>Timeline for {timelineDay}</strong>
+          {/* TODO: Render timeline details for the selected day here */}
+          <div style={{marginTop: 8, color: '#888'}}>Show times and participant availability for this day.</div>
+        </div>
+      )}
     </div>
   );
 }

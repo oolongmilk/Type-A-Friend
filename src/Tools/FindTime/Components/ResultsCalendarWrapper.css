@@ -1,0 +1,12 @@
+/* Modern pill-style segmented control for ResultsCalendarWrapper */
+.tab-content {
+  min-height: 200px;
+  position: relative;
+}
+.fade-in {
+  animation: fadeInTab 0.25s;
+}
+@keyframes fadeInTab {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
