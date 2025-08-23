@@ -57,9 +57,9 @@ export default function ResultsCalendarWrapper({
                 const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
                 if (participantsForDay && participantsForDay.length > 0) {
                   return (
-                    <span>
+                    <span className="duck-count-legend">
                       <span className="day-count">{participantsForDay.length}</span>
-                      <span className="duck-indicator"><DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/></span>
+                      <span className="duck-indicator"><DuckIcon title='duck icon'/></span>
                     </span>
                   );
                 }
@@ -76,12 +76,12 @@ export default function ResultsCalendarWrapper({
             <span style={{display: 'inline-block', width: 18, height: 18, verticalAlign: 'middle', marginRight: 4}}>
               {(() => {
                 const DuckIcon = duckMap['yellow'];
-                return <DuckIcon style={{width: 18, height: 18}} />;
+                return <DuckIcon style={{width: 20, height: 20}} />;
               })()}
             </span>
-            = Someone is available
+            = People available on this day
           </li>
-          <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', boxShadow: '0 0 0 2px #00bcd433', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
+          <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', boxShadow: '0 0 0 2px #00bcd433', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Suggested time</li>
           <li><span style={{background: '#fff3e0', borderColor: '#ff9800', boxShadow: '0 0 0 2px #ff9800', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Today</li>
         </ul>
       </div>

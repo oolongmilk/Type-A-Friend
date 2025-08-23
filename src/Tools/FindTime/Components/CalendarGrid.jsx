@@ -71,7 +71,7 @@ export default function CalendarGrid({
                   }}
                 />
               )}
-              <span style={{ position: 'relative', zIndex: 3 }}>{dayObj.day}</span>
+              <span className="calendar-day-number">{dayObj.day}</span>
               {renderDayExtras(dayObj)}
             </button>
           );
