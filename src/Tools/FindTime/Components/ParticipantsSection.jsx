@@ -36,9 +36,14 @@ export default function ParticipantsSection({ participants, selectedDate, select
   // If a combo is selected, show who can/cannot make that exact combo (date+time)
   // Otherwise, fall back to selectedDate logic
   if (!selectedDate && !selectedCombo) {
-    return <div className="participants-section"><h3>Participants</h3><div style={{color:'#888'}}>
-      Click on a suggested time or the calendar to see more details.
-      </div></div>;
+    return (
+      <div className="participants-section">
+        <h3>Participants</h3>
+        <div style={{ color: '#888' }}>
+          Click on a suggested time to see more details.
+        </div>
+      </div>
+    );
   }
   const canMakeIt = [];
   const cannotMakeIt = [];

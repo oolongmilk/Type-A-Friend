@@ -13,7 +13,7 @@
 }
 /* Suggestion section padding */
 .suggestion-section {
-  padding: 1rem 1.2rem;
+  padding: 1rem;
 }
 /* Best time h3 in PollResults */
 .suggestion-title {
@@ -64,4 +64,39 @@
   height: 28px;
   pointer-events: none;
   z-index: 2;
+}
+
+/* Selected suggestion section item */
+.selected-combo {
+  margin-bottom: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 32px;
+}
+
+.radio-outter {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #388e3c;
+  background: #fff;
+  margin-right: 6px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.radio-inner {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #388e3c;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
