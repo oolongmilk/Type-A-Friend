@@ -144,7 +144,7 @@ const PollResults = () => {
             onClick={() => setView('calendar')}
             aria-selected={view === 'calendar'}
           >
-            View by Calendar
+            View Calendar
           </button>
           <div className="segmented-indicator" style={{ left: view === 'suggested' ? 0 : '50%' }} />
         </div>
