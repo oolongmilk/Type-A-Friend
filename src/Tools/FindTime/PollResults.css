@@ -80,10 +80,13 @@
   position: relative;
   background: #f5f7fa;
   border-radius: 999px;
-  width: 340px;
+  width: 100%;           /* Fill parent */
+  max-width: 340px;      /* Optional: limit max width */
   margin: 0 auto 24px auto;
   box-shadow: 0 1px 4px 0 #0001;
+  min-width: 0;          /* Prevent overflow in flex parents */
 }
+
 .segmented-tab {
   flex: 1 1 0;
   border: none;
