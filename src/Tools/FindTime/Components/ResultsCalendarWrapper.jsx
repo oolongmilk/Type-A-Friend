@@ -22,6 +22,7 @@ export default function ResultsCalendarWrapper({
   pollData
 }) {
   const [timelineDay, setTimelineDay] = useState(null); // date string
+  const DuckIcon = duckMap['yellow'];
 
   // Handler for calendar day click
   const handleDateSelect = date => {
@@ -52,18 +53,18 @@ export default function ResultsCalendarWrapper({
           const isSelected = selectedDate === dayObj.date;
           return [isBest ? 'best-time' : '', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
         }}
-        renderDayExtras={dayObj => {
-          const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
-          if (participantsForDay && participantsForDay.length > 0) {
-            const DuckIcon = duckMap['yellow'];
-            return (
-              <span className="duck-indicator">
-                <DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/>
-              </span>
-            );
-          }
-          return null;
-        }}
+              renderDayExtras={dayObj => {
+                const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
+                if (participantsForDay && participantsForDay.length > 0) {
+                  return (
+                    <span>
+                      <span className="day-count">{participantsForDay.length}</span>
+                      <span className="duck-indicator"><DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/></span>
+                    </span>
+                  );
+                }
+                return null;
+              }}
         disablePast={true}
         showSelectedLeaf={false}
       />

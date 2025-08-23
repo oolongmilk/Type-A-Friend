@@ -39,32 +39,6 @@
   color: #1976d2;
 }
 
-@media (max-width: 600px) {
-  .duck-indicator {
-    max-width: 24px;
-    left: 50%;
-    right: auto;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    justify-content: center !important;
-    align-items: center !important;
-  }
-}
-
-/* Duck icon for days that work */
-.duck-indicator {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  width: 28px;
-  height: 28px;
-  pointer-events: none;
-  z-index: 2;
-}
 
 /* Selected suggestion section item */
 .selected-combo {
