@@ -44,7 +44,7 @@ function About() {
               
               <span>
                 <span className="emoji">📸 </span> 
-                <a href="https://instagram.com/emile__unemployed" style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer" >
+                <a href="https://instagram.com/emile_unemployed" style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer" >
                   Instagram
                 </a>
               </span>

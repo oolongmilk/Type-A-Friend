@@ -1,5 +1,4 @@
-
-import { formatDateTime, getCurrentMonthDays, getMonthDays, duckMap } from './Utils/utils.js';
+import { formatDateTime, getMonthDays } from './Utils/utils.js';
 import ResultsCalendarWrapper from './Components/ResultsCalendarWrapper';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
@@ -8,7 +7,6 @@ import { database } from '../../firebase';
 import './FindTime.css';
 import './PollResults.css';
 import { spinner } from './Components/Spinner.jsx';
-import CalendarGrid from './Components/CalendarGrid.jsx';
 import ParticipantsSection from './Components/ParticipantsSection.jsx';
 import thumbs from '../../assets/thumbs.svg';
 import leaf from '../../assets/leaf.svg';
@@ -90,12 +88,18 @@ const PollResults = () => {
     );
   }
 
-  // Build a map: date -> { count, names, times: { time -> [names] } }
-  // Used for rendering the calendar and participant details
+  // Build dateMap (used to see who is available on which day and at what times) 
+  // and comboCounts (used to find the best combos)in a single loop
   const dateMap = {};
+  const comboCounts = new Map();
+
   if (pollData && pollData.participants) {
     pollData.participants.forEach(p => {
       (p.dateTimeCombos || []).forEach(combo => {
+        // For bestCombos
+        comboCounts.set(combo, (comboCounts.get(combo) || 0) + 1);
+
+        // For dateMap
         const [date, time] = combo.split('T');
         if (!dateMap[date]) dateMap[date] = { count: 0, names: new Set(), times: {} };
         dateMap[date].count++;
@@ -108,13 +112,7 @@ const PollResults = () => {
 
   // Find top 3 best date/time(s) with the highest overlaps
   let bestCombos = [];
-  if (pollData && pollData.participants) {
-    const comboCounts = new Map();
-    pollData.participants.forEach(p => {
-      (Array.isArray(p.dateTimeCombos) ? p.dateTimeCombos : []).forEach(combo => {
-        comboCounts.set(combo, (comboCounts.get(combo) || 0) + 1);
-      });
-    });
+  if (comboCounts.size > 0) {
     // Sort combos by count descending, then by time ascending for tie-breaker
     const sortedCombos = Array.from(comboCounts.entries())
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
@@ -197,7 +195,6 @@ const PollResults = () => {
               )}
               <ParticipantsSection 
                 participants={pollData.participants}
-                selectedDate={selectedDate}
                 selectedCombo={selectedCombo}
               />
               <div className="form-actions" style={{marginTop: '2rem'}}>

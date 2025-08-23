@@ -17,7 +17,6 @@ function Home() {
       </div>
       <div className="faq-section">
         <h2>FAQ </h2>
-        <p>(Friendship altering questions)</p>
       </div>
       <div className="question-cards">
         <Link to="/find-time" className="question-card">

@@ -29,12 +29,11 @@ function getAvailableTimesForDate(participant, date) {
  * ParticipantsSection component
  * Props:
  * - participants: array of { name, dateTimeCombos }
- * - selectedDate: string (YYYY-MM-DD)
+ * - selectedCombo: string (YYYY-MM-DDTHH:MM)
  */
-export default function ParticipantsSection({ participants, selectedDate, selectedCombo }) {
+export default function ParticipantsSection({ participants, selectedCombo }) {
   // If a combo is selected, show who can/cannot make that exact combo (date+time)
-  // Otherwise, fall back to selectedDate logic
-  if (!selectedDate && !selectedCombo) {
+  if (!selectedCombo) {
     return (
       <div className="participants-section">
         <h3>Participants</h3>
@@ -44,36 +43,31 @@ export default function ParticipantsSection({ participants, selectedDate, select
       </div>
     );
   }
+
   const [openIndexes, setOpenIndexes] = useState([]);
   useEffect(() => {
     setOpenIndexes([]);
-  }, [selectedDate, selectedCombo]);
+  }, [selectedCombo]);
 
   const [canMakeIt, cannotMakeIt] = React.useMemo(() => {
     const can = [];
     const cannot = [];
-    const day = selectedCombo ? selectedCombo.split('T')[0] : selectedDate;
+    const day = selectedCombo.split('T')[0]
     participants.forEach(p => {
       // Get available times for this participant and day
       const timesRaw = getAvailableTimesForDate(p, day) || [];
       const sortedTimes = sortTimes(timesRaw);
-      console.log(sortedTimes)
       if (selectedCombo) {
         if (Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(selectedCombo)) {
           can.push({ ...p, times: sortedTimes });
         } else {
           cannot.push({ ...p, times: sortedTimes });
         }
-      } else if (selectedDate) {
-        if (sortedTimes.length > 0) {
-          can.push({ ...p, times: sortedTimes });
-        } else {
-          cannot.push({ ...p, times: [] });
-        }
       }
     });
     return [can, cannot];
-  }, [participants, selectedDate, selectedCombo]);
+  }, [participants, selectedCombo]);
+
   return (
     <div className="participants-section">
       <h3>Participants</h3>
@@ -156,7 +150,7 @@ export default function ParticipantsSection({ participants, selectedDate, select
                           ? p.times.map((time, i) => (
                               <span key={i} className="available-time-pill">{time}</span>
                             ))
-                          : <span style={{ color: '#888' }}>None</span>
+                          : <span style={{ color: '#888' }}>None for this day</span>
                       }
                     </span>
                   </div>
