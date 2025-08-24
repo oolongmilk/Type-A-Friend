@@ -1,12 +1,12 @@
 import React from "react";
 import "./MobileDayTimeline.css";
 
-// Helper to format hour labels
-function formatHourLabel(hour) {
-  if (hour === 0) return "12 AM";
-  if (hour < 12) return `${hour} AM`;
-  if (hour === 12) return "12 PM";
-  return `${hour - 12} PM`;
+// Helper to format hour and half-hour labels
+function formatHourLabel(hour, half) {
+  let h = hour % 12 === 0 ? 12 : hour % 12;
+  let period = hour < 12 ? 'AM' : 'PM';
+  let min = half === 0 ? '00' : '30';
+  return `${h}:${min} ${period}`;
 }
 
 // Helper to get time string (e.g., 09:00, 09:30)
@@ -55,7 +55,7 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
           return (
             <div className="mobile-timeline-hour-row" key={t}>
               <span className="mobile-timeline-hour-label">
-                {half === 0 ? formatHourLabel(hour) : ''}
+                {formatHourLabel(hour, half)}
               </span>
               <span className="mobile-timeline-participants">
                 {names.map((name, idx) => (
