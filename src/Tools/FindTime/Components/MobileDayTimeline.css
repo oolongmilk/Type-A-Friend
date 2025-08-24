@@ -60,12 +60,17 @@
 }
 
 .mobile-timeline-hour-label {
+  white-space: nowrap;
   font-weight: 600;
   color: #0097a7;
-  min-width: 56px;
+  min-width: 70px;
+  max-width: 70px;
+  width: 70px;
   text-align: right;
   margin-right: 1rem;
   font-size: 1.1em;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .mobile-timeline-participants {

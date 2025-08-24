@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MobileDayTimeline.css";
 
 // Helper to format hour and half-hour labels
@@ -29,7 +29,14 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
   // Build a map of time -> Set of names available at that time
   const timeBlocks = [];
   const blocksPerHour = 60 / interval;
-  for (let hour = 0; hour < 24; hour++) {
+  // 7am (7) to 23 (11pm)
+  for (let hour = 7; hour < 24; hour++) {
+    for (let half = 0; half < blocksPerHour; half++) {
+      timeBlocks.push({ hour, half });
+    }
+  }
+  // midnight (0) to 6am (6)
+  for (let hour = 0; hour < 7; hour++) {
     for (let half = 0; half < blocksPerHour; half++) {
       timeBlocks.push({ hour, half });
     }
@@ -46,10 +53,17 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
     });
   });
 
+  // State to control showing more hours
+  const [showMore, setShowMore] = useState(false);
+
+  // Find the index after 12:00 AM (hour=0, half=0)
+  const cutoffIdx = timeBlocks.findIndex(({ hour, half }) => hour === 0 && half === 0);
+  const visibleBlocks = showMore ? timeBlocks : timeBlocks.slice(0, cutoffIdx + 1);
+
   return (
     <div className="mobile-timeline-scroll">
       <div className="mobile-timeline-hours">
-        {timeBlocks.map(({ hour, half }) => {
+        {visibleBlocks.map(({ hour, half }) => {
           const t = getTimeLabel(hour, half);
           const names = availabilityMap[t] || [];
           return (
@@ -65,6 +79,27 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
             </div>
           );
         })}
+        {!showMore && (
+          <button
+            className="mobile-timeline-show-more"
+            onClick={() => setShowMore(true)}
+            style={{
+              width: '100%',
+              margin: '1rem 0',
+              padding: '0.75em',
+              background: '#b2ebf2',
+              color: '#007c91',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '1.1em',
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px #00bcd41a',
+            }}
+          >
+            Show more hours
+          </button>
+        )}
       </div>
     </div>
   );
