@@ -21,13 +21,12 @@ const PollResults = () => {
   // CTA: track copy status for feedback
   const [copyStatus, setCopyStatus] = useState('');
 
-  // Helper: format the message to copy
-  function getShareMessage() {
-    if (!selectedCombo) return '';
-    const [date, time] = selectedCombo.split('T');
-    const formatted = formatDateTime(selectedCombo);
-    return `Best time for our event "${pollData.eventName}": ${formatted}\nVote or see details: ${window.location.href}`;
-  }
+// Helper: format the message to copy
+function getShareMessage() {
+  if (!selectedCombo) return '';
+  const formattedDay = formatDateTime(selectedCombo);
+  return `Here’s the best time for our event: ${pollData.eventName}\n🗓️ ${formattedDay}\n🐥 from Type A Friend`;
+}
 
   // Handler: copy to clipboard
   async function handleCopy() {
@@ -228,19 +227,24 @@ const PollResults = () => {
               />
               {/* CTA: Only show if a combo is selected */}
               {selectedCombo && (
-                <div style={{marginTop: '1.2rem', textAlign: 'center'}}>
-                  <button
-                    className="button secondary"
-                    style={{padding: '0.7rem 1.2rem', fontWeight: 600, fontSize: '1.08rem'}}
-                    onClick={handleCopy}
-                  >
-                    Share this time with friends
-                  </button>
-                  {copyStatus && (
-                    <div style={{marginTop: 8, color: copyStatus === 'Copied!' ? '#388e3c' : '#d32f2f', fontWeight: 500}}>
-                      {copyStatus}
-                    </div>
-                  )}
+                <div style={{marginTop: '1.2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+                  <div className="share-code-info copy-area" style={{marginBottom: 12, background: '#f5f5f5', border: "None", borderRadius: 6, padding: '0.7em 1em', display: 'inline-block', maxWidth: 400, textAlign: 'center'}}>
+                    <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, fontSize: '1em', fontFamily: 'inherit'}}>{getShareMessage()}</pre>
+                  </div>
+                  <div style={{textAlign: 'center'}}>
+                    <button
+                      className="button copy-button"
+                      style={{width: '100%', maxWidth: 400}}
+                      onClick={handleCopy}
+                    >
+                      Copy Message
+                    </button>
+                    {copyStatus && (
+                      <div style={{marginTop: 8, color: copyStatus === 'Copied!' ? '#388e3c' : '#d32f2f', fontWeight: 500}}>
+                        {copyStatus}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
               <div className="form-actions" style={{marginTop: '2rem'}}>

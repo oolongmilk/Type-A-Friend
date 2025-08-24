@@ -92,7 +92,6 @@ function ParticipantPoll() {
       const unsubscribe = loadPollFromFirebase(shareCode, (poll, error) => {
         if (error) {
           setMode('not-found');
-          alert('Error loading poll: ' + error.message);
           return;
         }
         if (poll) {
@@ -111,16 +110,7 @@ function ParticipantPoll() {
   }, [shareCode]);
 
   const submitResponse = async () => {
-    if (!participantName.trim()) {
-      setValidationStatus('Please enter your name');
-      setTimeout(() => setValidationStatus(''), 2500);
-      return;
-    }
-    if (selectedDateTimeCombos.size === 0) {
-      setValidationStatus('Please select at least one time slot');
-      setTimeout(() => setValidationStatus(''), 2500);
-      return;
-    }
+    // No need to check for missing fields here, handled in button onClick
     try {
       const success = await addResponseToFirebase(shareCode, participantName.trim(), Array.from(selectedDateTimeCombos));
       if (success) {

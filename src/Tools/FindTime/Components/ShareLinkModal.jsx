@@ -11,7 +11,7 @@ import '../FindTime.css';
  */
 export default function ShareLinkModal({ shareCode, onClose, onViewPoll }) {
   const pollUrl = `${window.location.origin}/find-time/${shareCode}`;
-  const copyText = `🌱 Hey I'm planning an event!\n🗓️ Add your availability: ${pollUrl}\n🌟 See the results (live updates!): ${pollUrl}/results\n— Sent with Type A Friend`;
+  const copyText = `🌱 Hey I'm planning an event!\n🗓️ Add your availability: ${pollUrl}\n🌟 See the results (live updates!): ${pollUrl}/results\n🐥 From Type A Friend`;
   const [copyStatus, setCopyStatus] = useState('');
 
   async function handleCopy() {
