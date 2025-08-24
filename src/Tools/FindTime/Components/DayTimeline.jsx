@@ -29,6 +29,8 @@ function to24Hour(time12h) {
 // date: "YYYY-MM-DD"
 // interval: 30 or 60
 export default function DayTimeline({ participants, date, interval = 30 }) {
+  // Only show participants who are available on this day
+  const filteredParticipants = participants.filter(p => (p.dateTimeCombos || []).length > 0);
   // Start at 7am, end at 6am next day (i.e., 7:00 to 6:30, 24 hours)
   const blocksPerHour = 60 / interval;
   const timeBlocks = [];
@@ -45,15 +47,19 @@ export default function DayTimeline({ participants, date, interval = 30 }) {
   }
 
   // Calculate overlap counts directly from filtered combos
-  const overlapCounts = {};
-  participants.forEach((p) => {
-    (p.dateTimeCombos || []).forEach((combo) => {
-      // Defensive: if combo contains 'T', split, else use as is
-      const t = combo.includes("T") ? combo.split("T")[1] : combo;
-      overlapCounts[t] = (overlapCounts[t] || 0) + 1;
+    const overlapCounts = {};
+    participants.forEach((p) => {
+      (p.dateTimeCombos || []).forEach((combo) => {
+        // Defensive: if combo contains 'T', split, else use as is
+        const comboTime = combo.includes("T") ? combo.split("T")[1] : combo;
+        const t24 = to24Hour(comboTime);
+        overlapCounts[t24] = (overlapCounts[t24] || 0) + 1;
+
+      });
     });
-  });
-  const maxOverlap = Math.max(1, ...Object.values(overlapCounts));
+
+    const maxOverlap = Math.max(1, ...Object.values(overlapCounts));
+
 
   return (
     <div className="timelineWrapper">
@@ -68,24 +74,22 @@ export default function DayTimeline({ participants, date, interval = 30 }) {
           ))}
         </div>
         {/* Participant rows */}
-        {participants.map((p) => (
+        {filteredParticipants.map((p) => (
           <div className="participantRow" key={p.name}>
             <div className="participantLabel">{p.name}</div>
             {timeBlocks.map(({ hour, half }, idx) => {
-              const t = getTimeLabel(hour, half);
+              const t = getTimeLabel(hour, half); // always 24-hour, zero-padded
+
               // Log all combos and t for debugging
               (p.dateTimeCombos || []).forEach((combo) => {
                 const comboTime = combo.split("T")[1];
                 const comboTime24 = to24Hour(comboTime);
-                console.log(
-                  `Comparing for ${p.name}: t=${t}, comboTime=${comboTime}, comboTime24=${comboTime24}, combo=${combo}`
-                );
               });
               const isAvailable = (p.dateTimeCombos || []).some((combo) => {
                 const comboTime = combo.split("T")[1];
                 return to24Hour(comboTime) === t;
               });
-              const overlap = overlapCounts[t] || 0;
+              const overlap = overlapCounts[t] || 0; 
               const blockClass = [
                 "timeBlock",
                 isAvailable ? "available" : "",
@@ -93,11 +97,13 @@ export default function DayTimeline({ participants, date, interval = 30 }) {
               ]
                 .filter(Boolean)
                 .join(" ");
+          
               let blockStyle = {};
               if (isAvailable) {
-                blockStyle.background = "#2196f3";
                 if (overlap > 1) {
-                  blockStyle.filter = "brightness(0.75)";
+                  blockStyle.background = "#43a047"; // green for overlap
+                } else {
+                  blockStyle.background = "#2196f3";
                 }
               } else {
                 blockStyle.background = "#e0e0e0";
