@@ -62,6 +62,16 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
 
   return (
     <div className="mobile-timeline-scroll">
+      <div className="mobile-timeline-title" style={{
+        fontWeight: 700,
+        fontSize: '1.2em',
+        textAlign: 'center',
+        margin: '1.2em 0 0.5em 0',
+        color: '#0097a7',
+        letterSpacing: '0.01em',
+      }}>
+        Availability for {date}
+      </div>
       <div className="mobile-timeline-hours">
         {visibleBlocks.map(({ hour, half }) => {
           const t = getTimeLabel(hour, half);
@@ -79,7 +89,7 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
             </div>
           );
         })}
-        {!showMore && (
+        {!showMore ? (
           <button
             className="mobile-timeline-show-more"
             onClick={() => setShowMore(true)}
@@ -98,6 +108,26 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
             }}
           >
             Show more hours
+          </button>
+        ) : (
+          <button
+            className="mobile-timeline-show-more"
+            onClick={() => setShowMore(false)}
+            style={{
+              width: '100%',
+              margin: '1rem 0',
+              padding: '0.75em',
+              background: '#b2ebf2',
+              color: '#007c91',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '1.1em',
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px #00bcd41a',
+            }}
+          >
+            Hide
           </button>
         )}
       </div>
