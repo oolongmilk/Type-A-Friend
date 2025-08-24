@@ -131,7 +131,7 @@ export default function ResultsCalendarWrapper({
                   marginRight: 6,
                   border: '2px solid #43a047',
                   boxSizing: 'border-box',
-                }}>1</span>
+                }}>?</span>
                 = People available on this day
               </li>
               <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', boxShadow: '0 0 0 2px #00bcd433', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Suggested time</li>
@@ -148,7 +148,7 @@ export default function ResultsCalendarWrapper({
             )}
             {selectedDate && (
               <>
-                <strong style={{fontSize: '1.1em'}}>Timeline for {selectedDate}</strong>
+                <strong style={{fontSize: '1.1em'}}>Availability for {selectedDate}</strong>
                 <DayTimeline
                   participants={(pollData.participants || []).map(p => {
                     // Only filter combos, but always include the participant
