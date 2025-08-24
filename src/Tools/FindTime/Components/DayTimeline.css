@@ -28,7 +28,9 @@
   padding: 2px 0;
   border-bottom: 1px solid #e0e0e0;
   min-width: 22px;
+  border-right: none;
 }
+
 
 .participantRow {
   display: grid;
@@ -50,6 +52,7 @@
   white-space: nowrap;
 }
 
+
 .timeBlock {
   height: 24px;
   border-radius: 0;
@@ -59,6 +62,22 @@
   position: relative;
   cursor: pointer;
   min-width: 18px;
+  border-left: none;
+}
+
+/* Add a solid black left border to every 1-hour block (every 2nd block, since 30min interval) */
+.participantRow .timeBlock:nth-child(2n+2) {
+  border-left: 2px solid #111;
+}
+
+/* Add a dotted left border to every 30-min block (every odd block, except the first in the hour) */
+.participantRow .timeBlock:nth-child(2n+1) {
+  border-left: 1px dotted #888;
+}
+
+/* Remove left border from the first block (7:00am) */
+.participantRow .timeBlock:first-child {
+  border-left: none;
 }
 
 .overlap {

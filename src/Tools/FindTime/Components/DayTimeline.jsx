@@ -29,10 +29,16 @@ function to24Hour(time12h) {
 // date: "YYYY-MM-DD"
 // interval: 30 or 60
 export default function DayTimeline({ participants, date, interval = 30 }) {
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  // Start at 7am, end at 6am next day (i.e., 7:00 to 6:30, 24 hours)
   const blocksPerHour = 60 / interval;
   const timeBlocks = [];
-  for (let hour = 0; hour < 24; hour++) {
+  // 7am (7) to 23:30 (23), then 0:00 (midnight) to 6:30 (6)
+  for (let hour = 7; hour < 24; hour++) {
+    for (let half = 0; half < blocksPerHour; half++) {
+      timeBlocks.push({ hour, half });
+    }
+  }
+  for (let hour = 0; hour < 7; hour++) {
     for (let half = 0; half < blocksPerHour; half++) {
       timeBlocks.push({ hour, half });
     }
