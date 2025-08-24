@@ -82,6 +82,8 @@ function ParticipantPoll() {
   const [allAvailableCombos, setAllAvailableCombos] = useState(new Set());
   // Local toggle for 30-minute intervals
   const [thirtyMinute, setThirtyMinute] = useState(false);
+  // Visual feedback for validation errors
+  const [validationStatus, setValidationStatus] = useState('');
 
   // Load poll and compute all available combos from all participants (Firebase)
   useEffect(() => {
@@ -90,7 +92,6 @@ function ParticipantPoll() {
       const unsubscribe = loadPollFromFirebase(shareCode, (poll, error) => {
         if (error) {
           setMode('not-found');
-          alert('Error loading poll: ' + error.message);
           return;
         }
         if (poll) {
@@ -109,23 +110,18 @@ function ParticipantPoll() {
   }, [shareCode]);
 
   const submitResponse = async () => {
-    if (!participantName.trim()) {
-      alert('Please enter your name');
-      return;
-    }
-    if (selectedDateTimeCombos.size === 0) {
-      alert('Please select at least one time slot');
-      return;
-    }
+    // No need to check for missing fields here, handled in button onClick
     try {
       const success = await addResponseToFirebase(shareCode, participantName.trim(), Array.from(selectedDateTimeCombos));
       if (success) {
         navigate(`/find-time/${shareCode}/results`);
       } else {
-        alert('Poll not found or could not update.');
+        setValidationStatus('Poll not found or could not update.');
+        setTimeout(() => setValidationStatus(''), 2500);
       }
     } catch (err) {
-      alert('Error updating poll: ' + err.message);
+      setValidationStatus('Error updating poll.');
+      setTimeout(() => setValidationStatus(''), 2500);
     }
   };
 
@@ -349,7 +345,8 @@ function ParticipantPoll() {
                   onClick={e => {
                     if (!participantName.trim() || selectedDateTimeCombos.size === 0) {
                       e.preventDefault();
-                      alert('Please fill in your name and select at least one time slot before submitting!');
+                      setValidationStatus('Please fill in your name and select at least one time slot before submitting!');
+                      setTimeout(() => setValidationStatus(''), 2500);
                       return;
                     }
                     submitResponse();
@@ -358,6 +355,11 @@ function ParticipantPoll() {
                 >
                   Submit My Availability
                 </button>
+                {validationStatus && (
+                  <div style={{marginTop: 8, color: '#d32f2f', fontWeight: 500, textAlign: 'center'}}>
+                    {validationStatus}
+                  </div>
+                )}
                 <Link to="/" className="button">Cancel</Link>
               </div>
             </div>

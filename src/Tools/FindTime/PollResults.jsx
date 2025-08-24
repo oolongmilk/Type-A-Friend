@@ -18,6 +18,27 @@ const PollResults = () => {
   const [selectedDate, setSelectedDate] = useState('');
   // New: track which suggested time is selected
   const [selectedCombo, setSelectedCombo] = useState(null);
+  // CTA: track copy status for feedback
+  const [copyStatus, setCopyStatus] = useState('');
+
+// Helper: format the message to copy
+function getShareMessage() {
+  if (!selectedCombo) return '';
+  const formattedDay = formatDateTime(selectedCombo);
+  return `Here’s the best time for our event: ${pollData.eventName}\n🗓️ ${formattedDay}\n🐥 from Type A Friend`;
+}
+
+  // Handler: copy to clipboard
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(getShareMessage());
+      setCopyStatus('Copied!');
+      setTimeout(() => setCopyStatus(''), 2000);
+    } catch (e) {
+      setCopyStatus('Copy failed');
+      setTimeout(() => setCopyStatus(''), 2000);
+    }
+  }
   // View toggle: 'suggested' or 'calendar'
   const [view, setView] = useState('suggested');
   // Calendar navigation state (same as CreatePoll/ParticipantPoll)
@@ -124,6 +145,9 @@ const PollResults = () => {
 
   return (
     <main className="main-content">
+      <div style={{background:'#e3f2fd',color:'#1976d2',fontWeight:700,padding:'0.7rem 1rem',borderRadius:'8px',marginBottom:'1.2rem',textAlign:'center',fontSize:'1.08rem'}}>
+          <span role="img" aria-label="live"></span> Live results: As your friends vote, the best time updates instantly for everyone—no refresh needed!
+        </div>
       <div className="poll-container">
         <h2
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
@@ -169,7 +193,7 @@ const PollResults = () => {
                       return (
                         <li
                           key={combo}
-                          className="selected-combo"
+                          className={`selected-combo${isSelected ? ' active' : ''}`}
                           onClick={() => setSelectedCombo(combo)}
                           tabIndex={0}
                           role="radio"
@@ -192,15 +216,37 @@ const PollResults = () => {
                 </div>
               ) : (
                 pollData.participants && pollData.participants.length === 1 ? (
-                  <div className="suggestion-section"><h3>Waiting for other participants to join poll.</h3></div>
+                  <div className="suggestion-section"><h3>Waiting for other participants to join poll</h3></div>
                 ) : (
-                  <div className="suggestion-section"><h3>Oop, there aren't any times that work for everyone.</h3></div>
+                  <div className="suggestion-section"><h3>Oop, there aren't any times that work for everyone</h3></div>
                 )
               )}
               <ParticipantsSection 
                 participants={pollData.participants}
                 selectedCombo={selectedCombo}
               />
+              {/* CTA: Only show if a combo is selected */}
+              {selectedCombo && (
+                <div style={{marginTop: '1.2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+                  <div className="share-code-info copy-area" style={{marginBottom: 12, background: '#f5f5f5', border: "None", borderRadius: 6, padding: '0.7em 1em', display: 'inline-block', maxWidth: 400, textAlign: 'center'}}>
+                    <pre style={{whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, fontSize: '1em', fontFamily: 'inherit'}}>{getShareMessage()}</pre>
+                  </div>
+                  <div style={{textAlign: 'center'}}>
+                    <button
+                      className="button copy-button"
+                      style={{width: '100%', maxWidth: 400}}
+                      onClick={handleCopy}
+                    >
+                      Copy Message
+                    </button>
+                    {copyStatus && (
+                      <div style={{marginTop: 8, color: copyStatus === 'Copied!' ? '#388e3c' : '#d32f2f', fontWeight: 500}}>
+                        {copyStatus}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="form-actions" style={{marginTop: '2rem'}}>
                 <Link to="/find-time" className="button primary">Create New Poll</Link>
               </div>

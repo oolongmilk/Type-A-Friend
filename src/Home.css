@@ -1,3 +1,12 @@
+/* Unifies all homepage sections in a single centered container */
+.homepage-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2.5rem;
 .jumbotron-image-col {
   width: 40%;
   min-width: 180px;
@@ -113,6 +122,24 @@
   cursor: pointer;
   box-sizing: border-box;
   align-self: stretch;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  .question-card {
+    padding: 1.2rem 0.7rem;
+    font-size: 0.98rem;
+    max-width: 100%;
+  }
+  .question-card h3, .question-card p {
+    font-size: 1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+}
 }
 .question-card svg {
   height: 100%;
