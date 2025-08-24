@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 // Your web app's Firebase configuration (from environment variables)
 const firebaseConfig = {
@@ -14,6 +15,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
+
+// Initialize Auth and sign in anonymously
+const auth = getAuth(firebase);
+signInAnonymously(auth).catch((error) => {
+  console.error('Anonymous sign-in failed:');
+});
 
 // Get a reference to the Realtime Database service
 export const database = getDatabase(firebase); // <--- NEW EXPORT!

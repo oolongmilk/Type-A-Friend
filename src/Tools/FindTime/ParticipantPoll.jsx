@@ -23,12 +23,12 @@ const loadPollFromFirebase = (shareCode, callback) => {
         callback(snapshot.exists() ? snapshot.val() : null, null);
       },
       (error) => {
-        console.error('Firebase read error:', error);
+        console.error('Firebase read error');
         callback(null, error);
       }
     );
   } catch (err) {
-    console.error('Firebase subscription error:', err);
+    console.error('Firebase subscription error');
     callback(null, err);
     return undefined;
   }
