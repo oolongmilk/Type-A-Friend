@@ -218,6 +218,7 @@ const PollResults = () => {
               setSelectedDate={setSelectedDate}
               bestCombos={bestCombos}
               pollData={pollData}
+              dateMap={dateMap}
             />
           )}
         </div>
