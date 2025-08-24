@@ -16,18 +16,18 @@ import CalendarHeader from './Components/CalendarHeader';
 
 
 
+
 function CreatePoll() {
   const navigate = useNavigate();
-  
+
   // Form data for creating new poll
   const [creatorName, setCreatorName] = useState('');
   const [eventName, setEventName] = useState('');
-  
+
   // New state for visual date-time picker
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
   const [currentSelectedTimes, setCurrentSelectedTimes] = useState(new Set());
   const [selectedDateTimeCombos, setSelectedDateTimeCombos] = useState(new Set());
-  
 
   // Modal state for sharing
   const [showShareModal, setShowShareModal] = useState(false);
@@ -35,6 +35,9 @@ function CreatePoll() {
 
   // New: Toggle for 30-minute intervals
   const [thirtyMinute, setThirtyMinute] = useState(false);
+
+  // Visual feedback for validation errors
+  const [validationStatus, setValidationStatus] = useState('');
 
   // Calendar navigation state
   const today = new Date();
@@ -70,7 +73,8 @@ function CreatePoll() {
 
   const createPoll = async () => {
     if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
-      alert('Please enter an event name, your name, and at least one date/time combination');
+      setValidationStatus('Please enter an event name, your name, and at least one date/time combination');
+      setTimeout(() => setValidationStatus(''), 2500);
       return;
     }
 
@@ -277,7 +281,8 @@ function CreatePoll() {
                 onClick={e => {
                   if (!eventName.trim() || selectedDateTimeCombos.size === 0 || !creatorName.trim()) {
                     e.preventDefault();
-                    alert('Please enter an event name, your name, and at least one date/time combination before submitting!');
+                    setValidationStatus('Please enter an event name, your name, and at least one date/time combination');
+                    setTimeout(() => setValidationStatus(''), 2500);
                     return;
                   }
                   createPoll();
@@ -286,6 +291,11 @@ function CreatePoll() {
               >
                 Send Poll to Your Friends
               </button>
+              {validationStatus && (
+                <div style={{marginTop: 8, color: '#d32f2f', fontWeight: 500, textAlign: 'center'}}>
+                  {validationStatus}
+                </div>
+              )}
               <Link to="/" className="button">Cancel</Link>
             </div>
           </div>

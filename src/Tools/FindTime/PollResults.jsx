@@ -18,6 +18,28 @@ const PollResults = () => {
   const [selectedDate, setSelectedDate] = useState('');
   // New: track which suggested time is selected
   const [selectedCombo, setSelectedCombo] = useState(null);
+  // CTA: track copy status for feedback
+  const [copyStatus, setCopyStatus] = useState('');
+
+  // Helper: format the message to copy
+  function getShareMessage() {
+    if (!selectedCombo) return '';
+    const [date, time] = selectedCombo.split('T');
+    const formatted = formatDateTime(selectedCombo);
+    return `Best time for our event "${pollData.eventName}": ${formatted}\nVote or see details: ${window.location.href}`;
+  }
+
+  // Handler: copy to clipboard
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(getShareMessage());
+      setCopyStatus('Copied!');
+      setTimeout(() => setCopyStatus(''), 2000);
+    } catch (e) {
+      setCopyStatus('Copy failed');
+      setTimeout(() => setCopyStatus(''), 2000);
+    }
+  }
   // View toggle: 'suggested' or 'calendar'
   const [view, setView] = useState('suggested');
   // Calendar navigation state (same as CreatePoll/ParticipantPoll)
@@ -125,7 +147,7 @@ const PollResults = () => {
   return (
     <main className="main-content">
       <div style={{background:'#e3f2fd',color:'#1976d2',fontWeight:700,padding:'0.7rem 1rem',borderRadius:'8px',marginBottom:'1.2rem',textAlign:'center',fontSize:'1.08rem'}}>
-          <span role="img" aria-label="live">🔄</span> Live results: As your friends vote, the best time updates instantly for everyone—no refresh needed!
+          <span role="img" aria-label="live"></span> Live results: As your friends vote, the best time updates instantly for everyone—no refresh needed!
         </div>
       <div className="poll-container">
         <h2
@@ -172,7 +194,7 @@ const PollResults = () => {
                       return (
                         <li
                           key={combo}
-                          className="selected-combo"
+                          className={`selected-combo${isSelected ? ' active' : ''}`}
                           onClick={() => setSelectedCombo(combo)}
                           tabIndex={0}
                           role="radio"
@@ -204,6 +226,23 @@ const PollResults = () => {
                 participants={pollData.participants}
                 selectedCombo={selectedCombo}
               />
+              {/* CTA: Only show if a combo is selected */}
+              {selectedCombo && (
+                <div style={{marginTop: '1.2rem', textAlign: 'center'}}>
+                  <button
+                    className="button secondary"
+                    style={{padding: '0.7rem 1.2rem', fontWeight: 600, fontSize: '1.08rem'}}
+                    onClick={handleCopy}
+                  >
+                    Share this time with friends
+                  </button>
+                  {copyStatus && (
+                    <div style={{marginTop: 8, color: copyStatus === 'Copied!' ? '#388e3c' : '#d32f2f', fontWeight: 500}}>
+                      {copyStatus}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="form-actions" style={{marginTop: '2rem'}}>
                 <Link to="/find-time" className="button primary">Create New Poll</Link>
               </div>
