@@ -1,3 +1,11 @@
+@media (max-width: 700px) {
+  .results-layout {
+    display: block;
+  }
+  .timeline-panel {
+    display: none !important;
+  }
+}
 /* Side-by-side layout for desktop */
 .results-layout {
   display: grid;
@@ -5,12 +13,11 @@
   gap: 2rem;
   align-items: start;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  box-sizing: border-box;
 }
 .calendar-panel {
-  min-width: 320px;
-  max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .timeline-panel {
   min-width: 600px;
@@ -63,6 +70,9 @@
 .tab-content {
   min-height: 200px;
   position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 .fade-in {
   animation: fadeInTab 0.25s;
