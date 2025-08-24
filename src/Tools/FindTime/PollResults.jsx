@@ -192,9 +192,9 @@ const PollResults = () => {
                 </div>
               ) : (
                 pollData.participants && pollData.participants.length === 1 ? (
-                  <div className="suggestion-section"><h3>Waiting for other participants to join poll.</h3></div>
+                  <div className="suggestion-section"><h3>Waiting for other participants to join poll</h3></div>
                 ) : (
-                  <div className="suggestion-section"><h3>Oop, there aren't any times that work for everyone.</h3></div>
+                  <div className="suggestion-section"><h3>Oop, there aren't any times that work for everyone</h3></div>
                 )
               )}
               <ParticipantsSection 
