@@ -125,6 +125,9 @@ const PollResults = () => {
   return (
     <main className="main-content">
       <div className="poll-container">
+        <div style={{background:'#e3f2fd',color:'#1976d2',fontWeight:700,padding:'0.7rem 1rem',borderRadius:'8px',marginBottom:'1.2rem',textAlign:'center',fontSize:'1.08rem'}}>
+          <span role="img" aria-label="live">🔄</span> Live results: As your friends vote, the best time updates instantly for everyone—no refresh needed!
+        </div>
         <h2
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
