@@ -111,6 +111,7 @@ function CreatePoll() {
       setShowShareModal(true);
     } catch (error) {
       alert("Oops there's been an error saving the poll! Please try again later");
+      console.error("Error saving new poll:");
     }
   };
 
