@@ -116,8 +116,6 @@ export default function ResultsCalendarWrapper({
                 borderRadius: '50%',
                 color: '#fff',
                 background: '#43a047',
-                color: '#fff',
-                background: '#43a047',
                 fontWeight: 700,
                 fontSize: 14,
                 marginRight: 6,
@@ -132,6 +130,11 @@ export default function ResultsCalendarWrapper({
         </div>
       </div>
       <div className="timeline-panel">
+        {!selectedDate && (
+          <div style={{ marginBottom: '0.75em', color: '#444', fontSize: '1em', padding: '0.5em 1em', borderRadius: '6px' }}>
+            <span>Click on a day to see more availability details.</span>
+          </div>
+        )}
         {selectedDate && (
           <>
             <strong style={{fontSize: '1.1em'}}>Timeline for {selectedDate}</strong>
