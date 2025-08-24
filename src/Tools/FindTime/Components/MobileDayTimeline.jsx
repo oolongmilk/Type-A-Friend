@@ -1,5 +1,5 @@
 import React from "react";
-import "./DayTimeline.css";
+import "./MobileDayTimeline.css";
 
 // Helper to format hour labels
 function formatHourLabel(hour) {
@@ -29,12 +29,7 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
   // Build a map of time -> Set of names available at that time
   const timeBlocks = [];
   const blocksPerHour = 60 / interval;
-  for (let hour = 7; hour < 24; hour++) {
-    for (let half = 0; half < blocksPerHour; half++) {
-      timeBlocks.push({ hour, half });
-    }
-  }
-  for (let hour = 0; hour < 7; hour++) {
+  for (let hour = 0; hour < 24; hour++) {
     for (let half = 0; half < blocksPerHour; half++) {
       timeBlocks.push({ hour, half });
     }
@@ -51,27 +46,26 @@ export default function MobileDayTimeline({ participants, date, interval = 30 })
     });
   });
 
-  // Build vertical list of bars for each time block with at least one available
-  const bars = timeBlocks
-    .map(({ hour, half }) => {
-      const t = getTimeLabel(hour, half);
-      const names = availabilityMap[t] || [];
-      return names.length > 0
-        ? { t, hour, half, names }
-        : null;
-    })
-    .filter(Boolean);
-
   return (
-    <div className="mobile-timeline-vertical">
-      {bars.map(({ t, hour, half, names }) => (
-        <div className="mobile-availability-bar" key={t}>
-          <span className="mobile-time-label">
-            {half === 0 ? formatHourLabel(hour) : ""}
-          </span>
-          <span className="mobile-names">{names.join(", ")}</span>
-        </div>
-      ))}
+    <div className="mobile-timeline-scroll">
+      <div className="mobile-timeline-hours">
+        {timeBlocks.map(({ hour, half }) => {
+          const t = getTimeLabel(hour, half);
+          const names = availabilityMap[t] || [];
+          return (
+            <div className="mobile-timeline-hour-row" key={t}>
+              <span className="mobile-timeline-hour-label">
+                {half === 0 ? formatHourLabel(hour) : ''}
+              </span>
+              <span className="mobile-timeline-participants">
+                {names.map((name, idx) => (
+                  <span className="mobile-timeline-participant" key={name + idx}>{name}</span>
+                ))}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
