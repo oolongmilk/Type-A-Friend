@@ -33,13 +33,13 @@ function Home() {
             <p>When is it happening again?</p>
           </div>
         </Link> */}
-        <Link to="/whos-going" className="question-card">
+        {/* <Link to="/whos-going" className="question-card">
           <DuckLeaf style={{ width: 48, height: 48 }} />
           <div>
             <h3>See your friend's times</h3>
             <p>Who's going?</p>
           </div>
-        </Link>
+        </Link> */}
       </div>
     </main>
   );
