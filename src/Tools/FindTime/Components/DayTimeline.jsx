@@ -102,6 +102,13 @@ export default function DayTimeline({ participants, date, interval = 30 }) {
               } else {
                 blockStyle.background = "#e0e0e0";
               }
+              // Format time as 'h:mm AM/PM'
+              function formatTooltipTime(hour, half) {
+                let h = hour % 12 === 0 ? 12 : hour % 12;
+                let m = half === 1 ? '30' : '00';
+                let ampm = hour < 12 ? 'AM' : 'PM';
+                return `${h}:${m} ${ampm}`;
+              }
               return (
                 <div
                   key={idx}
@@ -109,9 +116,7 @@ export default function DayTimeline({ participants, date, interval = 30 }) {
                   style={blockStyle}
                   data-tooltip={
                     isAvailable
-                      ? `${p.name} available at ${formatHourLabel(hour)}${
-                          half === 1 ? ":30" : ":00"
-                        }`
+                      ? `${p.name} available at ${formatTooltipTime(hour, half)}`
                       : undefined
                   }
                 ></div>
