@@ -3,18 +3,17 @@ import { duckMap } from '../Utils/utils.js';
 import arrow from '../../../assets/arrow.svg';
 import './PartipantsSection.css';
 
-// Helper: sort times chronologically (assumes 24-hour or 12-hour format with AM/PM)
+// Helper: sort times chronologically for 'H:MM AM/PM' format
 function sortTimes(times) {
-  // Try to parse as Date objects for sorting
-  return times.slice().sort((a, b) => {
-    const parse = t => {
-      // Handles both '3:00 PM' and '15:00' formats
-      const d = new Date('1970-01-01T' + (t.match(/AM|PM/) ?
-        (t.replace(/(AM|PM)/, '').trim() + (t.includes('PM') && !t.startsWith('12') ? ' PM' : '')) : t));
-      return d.getHours() * 60 + d.getMinutes();
-    };
-    return parse(a) - parse(b);
-  });
+  // Parses 'H:MM AM/PM' to minutes since midnight
+  function parseTime(t) {
+    const [time, ampm] = t.split(' ');
+    let [hour, minute] = time.split(':').map(Number);
+    if (ampm === 'PM' && hour !== 12) hour += 12;
+    if (ampm === 'AM' && hour === 12) hour = 0;
+    return hour * 60 + minute;
+  }
+  return times.slice().sort((a, b) => parseTime(a) - parseTime(b));
 }
 
 
@@ -30,42 +29,45 @@ function getAvailableTimesForDate(participant, date) {
  * ParticipantsSection component
  * Props:
  * - participants: array of { name, dateTimeCombos }
- * - selectedDate: string (YYYY-MM-DD)
+ * - selectedCombo: string (YYYY-MM-DDTHH:MM)
  */
-export default function ParticipantsSection({ participants, selectedDate, selectedCombo }) {
+export default function ParticipantsSection({ participants, selectedCombo }) {
   // If a combo is selected, show who can/cannot make that exact combo (date+time)
-  // Otherwise, fall back to selectedDate logic
-  if (!selectedDate && !selectedCombo) {
-    return <div className="participants-section"><h3>Participants</h3><div style={{color:'#888'}}>
-      Click on a suggested time or the calendar to see more details.
-      </div></div>;
+  if (!selectedCombo) {
+    return (
+      <div className="participants-section">
+        <h3>Participants</h3>
+        <div style={{ color: '#888' }}>
+          Click on a suggested time to see more details.
+        </div>
+      </div>
+    );
   }
-  const canMakeIt = [];
-  const cannotMakeIt = [];
+
   const [openIndexes, setOpenIndexes] = useState([]);
   useEffect(() => {
     setOpenIndexes([]);
-  }, [selectedDate, selectedCombo]);
+  }, [selectedCombo]);
 
-  if (selectedCombo) {
-    // selectedCombo is in the form YYYY-MM-DDTHH:MM AM/PM
+  const [canMakeIt, cannotMakeIt] = React.useMemo(() => {
+    const can = [];
+    const cannot = [];
+    const day = selectedCombo.split('T')[0]
     participants.forEach(p => {
-      if (Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(selectedCombo)) {
-        canMakeIt.push({ ...p, times: [selectedCombo.split('T')[1]] });
-      } else {
-        cannotMakeIt.push(p);
+      // Get available times for this participant and day
+      const timesRaw = getAvailableTimesForDate(p, day) || [];
+      const sortedTimes = sortTimes(timesRaw);
+      if (selectedCombo) {
+        if (Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(selectedCombo)) {
+          can.push({ ...p, times: sortedTimes });
+        } else {
+          cannot.push({ ...p, times: sortedTimes });
+        }
       }
     });
-  } else if (selectedDate) {
-    participants.forEach(p => {
-      const times = getAvailableTimesForDate(p, selectedDate);
-      if (times.length > 0) {
-        canMakeIt.push({ ...p, times });
-      } else {
-        cannotMakeIt.push(p);
-      }
-    });
-  }
+    return [can, cannot];
+  }, [participants, selectedCombo]);
+
   return (
     <div className="participants-section">
       <h3>Participants</h3>
@@ -101,7 +103,7 @@ export default function ParticipantsSection({ participants, selectedDate, select
                     </div>
                     {isOpen && (
                       <div className="participant-row participant-row-bottom">
-                        <span className="available-times">Available times: {sortTimes(p.times).map((time, i) => (
+                        <span className="available-times">Available times: {p.times.map((time, i) => (
                           <span key={i} className="available-time-pill">{time}</span>
                         ))}</span>
                       </div>
@@ -115,12 +117,44 @@ export default function ParticipantsSection({ participants, selectedDate, select
           {cannotMakeIt.length === 0 && <div style={{color:'#888'}}>Everyone is available for this day.</div>}
           {cannotMakeIt.map((p, index) => {
             const DuckIcon = duckMap[p.color];
+            const cannotKey = `cannot-${index}`;
+            const isOpen = openIndexes.includes(cannotKey);
+            const toggleDropdown = idx => {
+              setOpenIndexes(open => open.includes(idx)
+                ? open.filter(i => i !== idx)
+                : [...open, idx]
+              );
+            };
             return (
               <div key={index} className="participant-item participant-item-grid">
-                <div className="participant-row participant-row-top">
-                  <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
-                  <span className="participant-name">{p.name}</span>
+                <div className="participant-row participant-row-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <DuckIcon style={{ width: 28, height: 28, flexShrink: 0 }} aria-label={`Duck icon for ${p.name}`} />
+                    <span className="participant-name">{p.name}</span>
+                  </span>
+                  <button
+                    className="dropdown-arrow"
+                    aria-label={isOpen ? 'Hide details' : 'Show details'}
+                    onClick={() => toggleDropdown(cannotKey)}
+                    tabIndex={0}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 8, padding: 0, display: 'flex', alignItems: 'center' }}
+                  >
+                    <img src={arrow} alt="dropdown arrow" style={{ width: 18, height: 18, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                  </button>
                 </div>
+                {isOpen && (
+                  <div className="participant-row participant-row-bottom">
+                    <span className="available-times">
+                      Available times: {
+                        p.times.length > 0
+                          ? p.times.map((time, i) => (
+                              <span key={i} className="available-time-pill">{time}</span>
+                            ))
+                          : <span style={{ color: '#888' }}>None for this day</span>
+                      }
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}

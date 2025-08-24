@@ -1,6 +1,5 @@
-
-import { formatDateTime, getCurrentMonthDays, getMonthDays, duckMap } from './Utils/utils.js';
-import CalendarHeader from './Components/CalendarHeader';
+import { formatDateTime, getMonthDays } from './Utils/utils.js';
+import ResultsCalendarWrapper from './Components/ResultsCalendarWrapper';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
@@ -8,7 +7,6 @@ import { database } from '../../firebase';
 import './FindTime.css';
 import './PollResults.css';
 import { spinner } from './Components/Spinner.jsx';
-import CalendarGrid from './Components/CalendarGrid.jsx';
 import ParticipantsSection from './Components/ParticipantsSection.jsx';
 import thumbs from '../../assets/thumbs.svg';
 import leaf from '../../assets/leaf.svg';
@@ -20,6 +18,8 @@ const PollResults = () => {
   const [selectedDate, setSelectedDate] = useState('');
   // New: track which suggested time is selected
   const [selectedCombo, setSelectedCombo] = useState(null);
+  // View toggle: 'suggested' or 'calendar'
+  const [view, setView] = useState('suggested');
   // Calendar navigation state (same as CreatePoll/ParticipantPoll)
   const today = new Date();
   const [displayYear, setDisplayYear] = useState(today.getFullYear());
@@ -88,12 +88,18 @@ const PollResults = () => {
     );
   }
 
-  // Build a map: date -> { count, names, times: { time -> [names] } }
-  // Used for rendering the calendar and participant details
+  // Build dateMap (used to see who is available on which day and at what times) 
+  // and comboCounts (used to find the best combos)in a single loop
   const dateMap = {};
+  const comboCounts = new Map();
+
   if (pollData && pollData.participants) {
     pollData.participants.forEach(p => {
       (p.dateTimeCombos || []).forEach(combo => {
+        // For bestCombos
+        comboCounts.set(combo, (comboCounts.get(combo) || 0) + 1);
+
+        // For dateMap
         const [date, time] = combo.split('T');
         if (!dateMap[date]) dateMap[date] = { count: 0, names: new Set(), times: {} };
         dateMap[date].count++;
@@ -106,13 +112,7 @@ const PollResults = () => {
 
   // Find top 3 best date/time(s) with the highest overlaps
   let bestCombos = [];
-  if (pollData && pollData.participants) {
-    const comboCounts = new Map();
-    pollData.participants.forEach(p => {
-      (Array.isArray(p.dateTimeCombos) ? p.dateTimeCombos : []).forEach(combo => {
-        comboCounts.set(combo, (comboCounts.get(combo) || 0) + 1);
-      });
-    });
+  if (comboCounts.size > 0) {
     // Sort combos by count descending, then by time ascending for tie-breaker
     const sortedCombos = Array.from(comboCounts.entries())
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
@@ -130,47 +130,80 @@ const PollResults = () => {
           <img src={leaf} alt="leaf icon" style={{ width: '2.2rem', height: '2.2rem', verticalAlign: 'middle' }} />
           {pollData.eventName}
         </h2>
-        <div className="two-column-layout">
-          <div className="left-column">
-            {/* Best day(s) banner */}
-            {bestCombos.length > 0 ? (
-              <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
-                <h3 className="suggestion-title">
-                  <img src={thumbs} alt="Best" />
-                  Suggested Times{bestCombos.length > 1 ? 's' : ''}
-                  
-                </h3>
-                <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-                  {bestCombos.map(combo => {
-                    const [date, time] = combo.split('T');
-                    const names = pollData.participants
-                      .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
-                      .map(p => p.name);
-                    const everyone = names.length === pollData.participants.length;
-                    const isSelected = selectedCombo === combo;
-                    return (
-                      <li
-                        key={combo}
-                        style={{marginBottom: 4, cursor: 'pointer', background: isSelected ? '#e0f7fa' : undefined, borderRadius: 6, padding: '2px 6px'}}
-                        onClick={() => setSelectedCombo(combo)}
-                      >
-                        <strong>{formatDateTime(combo)}</strong>
-                        <span style={{marginLeft: 8, color: '#388e3c'}}>
-                          ({everyone
-                            ? 'Everyone'
-                            : `${names.length} / ${pollData.participants.length} can make it`
-                          })
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
+        {/* Modern pill-style segmented control for toggling views */}
+        <div className="segmented-tabs" style={{margin: '0 auto 24px auto'}}>
+          <button
+            className={`segmented-tab${view === 'suggested' ? ' active' : ''}`}
+            onClick={() => setView('suggested')}
+            aria-selected={view === 'suggested'}
+          >
+            Suggested Times
+          </button>
+          <button
+            className={`segmented-tab${view === 'calendar' ? ' active' : ''}`}
+            onClick={() => setView('calendar')}
+            aria-selected={view === 'calendar'}
+          >
+            View Calendar
+          </button>
+          <div className="segmented-indicator" style={{ left: view === 'suggested' ? 0 : '50%' }} />
+        </div>
+
+        <div className="tab-content fade-in" key={view}>
+          {view === 'suggested' && (
+            <>
+              {bestCombos.length > 0 ? (
+                <div className="suggestion-section" style={{marginBottom: '1.5rem'}}>
+                  <h3 className="suggestion-title">
+                    <img src={thumbs} alt="Best" />
+                    Suggested Times
+                  </h3>
+                  <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                    {bestCombos.map(combo => {
+                      const [date, time] = combo.split('T');
+                      const names = pollData.participants
+                        .filter(p => Array.isArray(p.dateTimeCombos) && p.dateTimeCombos.includes(combo))
+                        .map(p => p.name);
+                      const everyone = names.length === pollData.participants.length;
+                      const isSelected = selectedCombo === combo;
+                      return (
+                        <li
+                          key={combo}
+                          className="selected-combo"
+                          onClick={() => setSelectedCombo(combo)}
+                          tabIndex={0}
+                          role="radio"
+                          aria-checked={isSelected}
+                        >
+                          <span className="radio-outter">
+                            {isSelected && <span className="radio-inner" />}
+                          </span>
+                          <strong>{formatDateTime(combo)}</strong>
+                          <span style={{marginLeft: 8, color: '#388e3c'}}>
+                            {everyone
+                              ? 'Everyone Available'
+                              : `${names.length} of ${pollData.participants.length} Available`
+                            }
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
+              )}
+              <ParticipantsSection 
+                participants={pollData.participants}
+                selectedCombo={selectedCombo}
+              />
+              <div className="form-actions" style={{marginTop: '2rem'}}>
+                <Link to="/find-time" className="button primary">Create New Poll</Link>
               </div>
-            ) : (
-              <div className="suggestion-section"><h3>Wow, there aren't any times that work for everyone.</h3></div>
-            )}
-            {/* Calendar grid */}
-            <CalendarHeader
+            </>
+          )}
+          {view === 'calendar' && (
+            <ResultsCalendarWrapper
               displayYear={displayYear}
               displayMonth={displayMonth}
               minDate={minDate}
@@ -180,67 +213,14 @@ const PollResults = () => {
               goToNextMonth={goToNextMonth}
               setDisplayYear={setDisplayYear}
               setDisplayMonth={setDisplayMonth}
-            />
-            <CalendarGrid
-              days={calendarData.days}
-              monthName={calendarData.monthName}
+              calendarData={calendarData}
               selectedDate={selectedDate}
-              onDateSelect={setSelectedDate}
-              dayModifiers={dayObj => {
-                const isBest = bestCombos.some(combo => combo.startsWith(dayObj.date));
-                const isSelected = selectedDate === dayObj.date;
-                return [isBest ? 'best-time' : '', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
-              }}
-              renderDayExtras={dayObj => {
-                const participantsForDay = pollData.participants?.filter(p => (p.dateTimeCombos || []).some(combo => combo.startsWith(dayObj.date)));
-                if (participantsForDay && participantsForDay.length > 0) {
-                  // Show a single duck icon with a number badge for count
-                  const count = participantsForDay.length;
-                  // Use the first participant's duck color, or yellow as fallback
-                  const DuckIcon = duckMap['yellow'];
-                  return (
-                    <span className="duck-indicator">
-                      <DuckIcon style={{ width: 20, height: 20 }} title='duck icon'/>
-                    </span>
-                  );
-                }
-                return null;
-              }}
-              disablePast={true}
-              showSelectedLeaf={false}
+              setSelectedDate={setSelectedDate}
+              bestCombos={bestCombos}
+              pollData={pollData}
+              dateMap={dateMap}
             />
-            {/* Legend under calendar */}
-            <div className="legend" style={{marginTop: '1rem'}}>
-              <strong style={{color: '#222'}}>Legend:</strong>
-              <ul style={{listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1.5em', flexWrap: 'wrap', color: '#222'}}>
-                <li>
-                  <span style={{display: 'inline-block', width: 18, height: 18, verticalAlign: 'middle', marginRight: 4}}>
-                    {(() => {
-                      // Use the first participant's duckColor as the legend example, fallback to yellow
-                      const DuckIcon = duckMap['yellow'];
-                      return <DuckIcon style={{width: 18, height: 18}} />;
-                    })()}
-                  </span>
-                  = Someone is available
-                </li>
-                <li><span style={{background: '#e0f7fa', borderColor: '#00bcd4', boxShadow: '0 0 0 2px #00bcd433', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Best time</li>
-                 <li><span style={{background: '#fff3e0', borderColor: '#ff9800', boxShadow: '0 0 0 2px #ff9800', display: 'inline-block', width: 18, height: 18, borderRadius: 4, verticalAlign: 'middle', marginRight: 4}}></span> = Today</li>
-              </ul>
-            </div>
-          </div>
-          {/* Right column: participants and share */}
-          <div className="right-column">
-
-            <ParticipantsSection 
-              participants={pollData.participants}
-              selectedDate={selectedDate}
-              selectedCombo={selectedCombo}
-            />
-
-            <div className="form-actions" style={{marginTop: '2rem'}}>
-              <Link to="/find-time" className="button primary">Create New Poll</Link>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

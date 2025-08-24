@@ -13,7 +13,7 @@
 }
 /* Suggestion section padding */
 .suggestion-section {
-  padding: 1rem 1.2rem;
+  padding: 1rem;
 }
 /* Best time h3 in PollResults */
 .suggestion-title {
@@ -39,29 +39,84 @@
   color: #1976d2;
 }
 
-@media (max-width: 600px) {
-  .duck-indicator {
-    max-width: 24px;
-    left: 50%;
-    right: auto;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    justify-content: center !important;
-    align-items: center !important;
-  }
+
+/* Selected suggestion section item */
+.selected-combo {
+  margin-bottom: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 32px;
 }
 
-/* Duck icon for days that work */
-.duck-indicator {
+.radio-outter {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 2px solid #388e3c;
+  background: #fff;
+  margin-right: 6px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.radio-inner {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #388e3c;
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.segmented-tabs {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  width: 28px;
-  height: 28px;
-  pointer-events: none;
-  z-index: 2;
+  position: relative;
+  background: #f5f7fa;
+  border-radius: 999px;
+  width: 100%;           /* Fill parent */
+  max-width: 340px;      /* Optional: limit max width */
+  margin: 0 auto 24px auto;
+  box-shadow: 0 1px 4px 0 #0001;
+  min-width: 0;          /* Prevent overflow in flex parents */
+}
+
+.segmented-tab {
+  flex: 1 1 0;
+  border: none;
+  background: transparent;
+  color: #222;
+  font-size: 1.05em;
+  font-weight: 500;
+  padding: 0.7em 0;
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 1;
+  transition: color 0.18s;
+}
+.segmented-tab.active {
+  color: #00796b;
+}
+.segmented-indicator {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  width: 50%;
+  height: calc(100% - 6px);
+  background: #e0f7fa;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px 0 #00bcd433;
+  transition: left 0.25s cubic-bezier(.4,0,.2,1);
+  z-index: 0;
 }
