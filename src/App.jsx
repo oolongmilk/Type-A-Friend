@@ -69,9 +69,6 @@ function App() {
             <span>•</span>
             <a href="https://www.instagram.com/emile_unemployed/" target="_blank" rel="noopener noreferrer">Instagram</a>
           </div>
-          <p style={{marginTop: '1.2rem', color: '#888', fontSize: '0.98rem'}}>
-            This site is free to use and supported by ads. We never sell your data or require signups.
-          </p>
           <p className="footer-copyright">&copy; 2025 Type A Friend. All rights reserved.</p>
         </div>
       </footer>
