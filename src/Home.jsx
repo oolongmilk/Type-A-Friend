@@ -48,7 +48,7 @@ function Home() {
             </div>
           </Link>
         </div>
-        <SharePrompt />
+        {/* <SharePrompt /> */}
         </div>
       </div>
     </main>
